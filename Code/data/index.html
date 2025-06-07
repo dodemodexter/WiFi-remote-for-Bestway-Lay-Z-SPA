@@ -8,6 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1">
+    <div style="display:none;">
+    <span data-i18n="label_day_singulier">day</span>
+    <span data-i18n="label_day_pluriel">days</span>
+</div>
 </head>
 
 <body>
@@ -708,39 +712,53 @@
         if (elemSelectorBrt.value == msgobj.BRT) updateBrtState = false;
       }
 
-      if (msgobj.CONTENT === "TIMES") {
-        // Horodatages, timers, etc.
-        var date = new Date(msgobj.TIME * 1000);
-        document.getElementById("time").innerHTML = date.toLocaleString();
+      
 
-        var clDate = (Date.now() / 1000 - msgobj.CLTIME) / (24 * 3600.0);
-        var clDateRound = Math.round(clDate);
-        document.getElementById("cltimer").innerHTML = clDateRound + " day" + (clDateRound !== 1 ? "s" : "");
-        document.getElementById("cltimerbtn").className = clDate > msgobj.CLINT ? "button_red" : "button";
+function getTranslatedDayText(count) {
+    const dayKey = count !== 1 ? "label_day_pluriel" : "label_day_singulier";
+    
+    const dayElement = document.querySelector(`[data-i18n="${dayKey}"]`);
+    const dayText = dayElement ? dayElement.textContent : (count !== 1 ? "days" : "day");
+    
+    return count + " " + dayText;
+}
 
-        var fDate = (Date.now() / 1000 - msgobj.FREP) / (24 * 3600.0);
-        var fDateRound = Math.round(fDate);
-        document.getElementById("freplacetimer").innerHTML = fDateRound + " day" + (fDateRound !== 1 ? "s" : "");
-        document.getElementById("freplacetimerbtn").className = fDate > msgobj.FREPI ? "button_red" : "button";
 
-        fDate = (Date.now() / 1000 - msgobj.FCLE) / (24 * 3600.0);
-        fDateRound = Math.round(fDate);
-        document.getElementById("fcleantimer").innerHTML = fDateRound + " day" + (fDateRound !== 1 ? "s" : "");
-        document.getElementById("fcleantimerbtn").className = fDate > msgobj.FCLEI ? "button_red" : "button";
+if (msgobj.CONTENT === "TIMES") {
+    // Horodatages, timers, etc.
+    var date = new Date(msgobj.TIME * 1000);
+    document.getElementById("time").innerHTML = date.toLocaleString();
 
-        fDate = (Date.now() / 1000 - msgobj.FRIN) / (24 * 3600.0);
-        fDateRound = Math.round(fDate);
-        document.getElementById("frinsetimer").innerHTML = fDateRound + " day" + (fDateRound !== 1 ? "s" : "");
-        document.getElementById("frinsetimerbtn").className = fDate > msgobj.FRINI ? "button_red" : "button";
+    var clDate = (Date.now() / 1000 - msgobj.CLTIME) / (24 * 3600.0);
+    var clDateRound = Math.round(clDate);
+    document.getElementById("cltimer").innerHTML = getTranslatedDayText(clDateRound);
+    document.getElementById("cltimerbtn").className = clDate > msgobj.CLINT ? "button_red" : "button";
 
-        document.getElementById("heatingtime").innerHTML = s2dhms(msgobj.HEATINGTIME);
-        document.getElementById("uptime").innerHTML = s2dhms(msgobj.UPTIME);
-        document.getElementById("airtime").innerHTML = s2dhms(msgobj.AIRTIME);
-        document.getElementById("filtertime").innerHTML = s2dhms(msgobj.PUMPTIME);
-        document.getElementById("jettime").innerHTML = s2dhms(msgobj.JETTIME);
-        document.getElementById("cost").innerHTML = msgobj.COST.toFixed(2);
-        document.getElementById("t2r").innerHTML = s2dhms(msgobj.T2R * 3600) + " (" + msgobj.RS + ")";
-      }
+    var fDate = (Date.now() / 1000 - msgobj.FREP) / (24 * 3600.0);
+    var fDateRound = Math.round(fDate);
+    document.getElementById("freplacetimer").innerHTML = getTranslatedDayText(fDateRound);
+    document.getElementById("freplacetimerbtn").className = fDate > msgobj.FREPI ? "button_red" : "button";
+
+    fDate = (Date.now() / 1000 - msgobj.FCLE) / (24 * 3600.0);
+    fDateRound = Math.round(fDate);
+    document.getElementById("fcleantimer").innerHTML = getTranslatedDayText(fDateRound);
+    document.getElementById("fcleantimerbtn").className = fDate > msgobj.FCLEI ? "button_red" : "button";
+
+    fDate = (Date.now() / 1000 - msgobj.FRIN) / (24 * 3600.0);
+    fDateRound = Math.round(fDate);
+    document.getElementById("frinsetimer").innerHTML = getTranslatedDayText(fDateRound);
+    document.getElementById("frinsetimerbtn").className = fDate > msgobj.FRINI ? "button_red" : "button";
+
+    // ... reste du code inchangé ...
+    document.getElementById("heatingtime").innerHTML = s2dhms(msgobj.HEATINGTIME);
+    document.getElementById("uptime").innerHTML = s2dhms(msgobj.UPTIME);
+    document.getElementById("airtime").innerHTML = s2dhms(msgobj.AIRTIME);
+    document.getElementById("filtertime").innerHTML = s2dhms(msgobj.PUMPTIME);
+    document.getElementById("jettime").innerHTML = s2dhms(msgobj.JETTIME);
+    document.getElementById("cost").innerHTML = msgobj.COST.toFixed(2);
+    document.getElementById("t2r").innerHTML = s2dhms(msgobj.T2R * 3600) + " (" + msgobj.RS + ")";
+}
+
     }
 
     function s2dhms(val) {
