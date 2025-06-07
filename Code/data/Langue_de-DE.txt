@@ -90,16 +90,18 @@ tooltip_uptime=Gesamte Betriebszeit des ESP seit dem letzten Zähler-Reset. Neus
 titel_spaconfig=Lay-Z-Spa Modul | SPA-Konfiguration
 
 label_price_kwh=Preis pro kWh :
-label_chlorine_interval=Chlorzugabe (Tage) :
-label_filter_change_interval=Filterwechsel (Tage) :
-label_filter_clean_interval=Filterreinigung (Tage) :
-label_filter_rinse_interval=Filterspülung (Tage) :
+label_chlorine_interval=Chlorzugabe :
+label_filter_change_interval=Filterwechsel :
+label_filter_clean_interval=Filterreinigung :
+label_filter_rinse_interval=Filterspülung :
 label_audio=Audio :
 label_notification=Benachrichtigung :
 label_notification_time=Benachrichtigungszeit (s) :
 label_restore_states=Zustände beim Start wiederherstellen :
 label_calibrated=Kalibriert :
 link_manual_cal=man. Kal.
+label_day_singulier=Tag
+label_day_pluriel=Tage
 
 section_display_buttons=Anzeige-Tasten aktiviert.
 label_all=Alle :
