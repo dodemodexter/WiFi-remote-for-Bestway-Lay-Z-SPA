@@ -56,6 +56,8 @@ tim_label_filter_change=Último cambio de filtro hace <span id="freplacetimer">n
 tim_label_filter_clean=Última limpieza de filtro hace <span id="fcleantimer">n/a</span>.
 tim_label_filter_rinse=Último enjuague de filtro hace <span id="frinsetimer">n/a</span>.
 btn_reset=reiniciar
+label_day_singulier=día
+label_day_pluriel=días
 
 section_totals_title=Totales
 totals_time_label=Tiempo :
