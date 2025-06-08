@@ -1,4 +1,4 @@
-# !!!! NEW -> Android App (APK) !!!! #
+‼️‼️ NEW → [Android App (APK)](#android-app-apk) ‼️‼️
 
 # WiFi remote for Bestway Lay-Z-SPA (fork – i18n + UI update)
 =================================
