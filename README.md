@@ -1,6 +1,7 @@
+# !!!! NEW -> Android App (APK) !!!! #
+
 # WiFi remote for Bestway Lay-Z-SPA (fork – i18n + UI update)
 =================================
-
 Fork based on the great original project by [visualapproach](https://github.com/visualapproach).  
 This version includes:
 
@@ -69,7 +70,7 @@ That’s all — the system will automatically pick up and apply the new languag
 
 
 A lightweight Android app is available to simplify access to the web interface:
-Download the APK
+[Download the APK](https://github.com/dodemodexter/WiFi-remote-for-Bestway-Lay-Z-SPA/blob/master/Code/APK/Lay-Z-By-visualapproach.apk)
 
 This app wraps the existing web UI and makes it easier to use on mobile:
 
