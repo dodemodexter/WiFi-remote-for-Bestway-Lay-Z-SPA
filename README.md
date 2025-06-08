@@ -65,6 +65,21 @@ To add support for another language:
 That’s all — the system will automatically pick up and apply the new language file via `i18n.js`.
 
 ---
+## Android App (APK)
+
+
+A lightweight Android app is available to simplify access to the web interface:
+Download the APK
+
+This app wraps the existing web UI and makes it easier to use on mobile:
+
+    Language is selected automatically on first launch
+
+    The IP address of your Lay-Z-Spa module must be known and entered at first use
+
+    Once configured, access is instant — just launch the app
+
+    Note: This is not a native app. It simply embeds the web UI in a dedicated container.
 
 ## Credit
 
