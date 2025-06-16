@@ -1,4 +1,28 @@
-‼️‼️ NEW → [Android App (APK)](#android-app-apk) ‼️‼️
+‼️‼️ NEW ‼️‼️
+
+## Available UI Versions
+
+### 🔵 Modern UI (v2 - Full Redesign)
+Location: `/Code/data_v2ui/`  
+Maintained by @dodemodexter  
+✔ Full multilingual support (EN, FR, DE, IT, ES, PT)  
+✔ Responsive design  
+✔ UI theming / clarity  
+✔ .json-based configuration  
+✔ Compatible with original firmware
+⚠ Slightly heavier than original version — not recommended on low-memory ESP.
+
+
+### 🟢 Default UI (Original)
+Location: `/Code/data/`  
+Maintained by upstream (VisualApproach)  
+Lightweight, minimal design.
+
+---
+
+### ✅ To switch between UIs:
+Upload the files from the desired version folder into your ESP module via `/upload.html`
+
 
 # WiFi remote for Bestway Lay-Z-SPA (fork – i18n + UI update)
 =================================
