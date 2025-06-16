@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="Lay-Z-Spa Module Control">Lay-Z-Spa Module Control by visualapproach</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Jersey+10:wght@400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="main_new.css">
+       
+</head>
+<body class="overflow-x-hidden">
+    <!-- Header with connection status -->
+<header class="bg-gray-900/95 backdrop-blur-sm border-b border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Title -->
+            <div>
+                <h1 class="text-xl font-bold text-white">
+                    <svg class="inline w-6 h-6 mr-1 logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <defs>
+                            <style>
+                                .st0 { fill: #203351; }
+                                .st1 { fill: none; }
+                                .st2 { fill: #3677bc; }
+                            </style>
+                        </defs>
+                        <polygon class="st1" points="304.88 313.97 282.6 233.05 264.28 288.01 304.88 313.97"/>
+                        <g>
+                            <polygon class="st0" points="278.64 95.04 197.81 335.25 149.54 233.92 121.65 261.81 190.9 400.79 294.74 95.04 278.64 95.04"/>
+                            <polygon class="st0" points="252.62 320.14 248.94 330.96 248.94 331.34 366.75 409.96 387.63 409.96 252.62 320.14"/>
+                            <polygon class="st0" points="304.88 313.97 336.95 334.48 295.58 194.08 282.6 233.05 304.88 313.97"/>
+                        </g>
+                        <path class="st2" d="M294.81,95.04l-103.91,305.75,28.81,16.29,29.24-86.11,3.67-10.82,135.01,89.82-92.82-314.93ZM282.6,233.05l12.99-38.98,41.37,140.4-32.07-20.51-40.6-25.96,18.31-54.96Z"/>
+                    </svg>
+                    <span data-i18n="SPA Control">SPA Control</span>
+                </h1>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Restart ESP Button -->			
+<button id="restart-esp-btn" class="restart-button flex items-center space-x-2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded-md transition-all duration-200 shadow-sm hover:shadow-md" onclick="promptRestartESP()">
+    <div class="power-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+        </svg>
+    </div>
+    <span class="hidden sm:inline font-medium" data-i18n="Restart ESP">Restart ESP</span>
+</button>
+				
+				
+
+                <!-- Connection Status -->
+                <div class="flex items-center space-x-2">
+                    <div id="status-indicator" class="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <span id="status-text" class="text-sm text-gray-300" data-i18n="Connecting...">Connecting...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <!-- Main Navigation -->
+    <nav class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-1 py-4 overflow-x-auto">
+                <div class="nav-tab active" onclick="switchTab('spa-control', this)">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text ml-2" data-i18n="SPA Control">SPA Control</span>
+                </div>
+                <div class="nav-tab" onclick="switchTab('hardware', this)">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text ml-2" data-i18n="Hardware">Hardware</span>
+                </div>
+                <div class="nav-tab" onclick="switchTab('spa-config', this)">
+                    <span class="nav-icon">🔧</span>
+                    <span class="nav-text ml-2" data-i18n="SPA Config">SPA Config</span>
+                </div>
+                <div class="nav-tab" onclick="switchTab('connectivity', this)">
+                    <span class="nav-icon">🌐</span>
+                    <span class="nav-text ml-2" data-i18n="Connectivity">Connectivity</span>
+                </div>
+                <div class="nav-tab" onclick="switchTab('files', this)">
+                    <span class="nav-icon">📁</span>
+                    <span class="nav-text ml-2" data-i18n="Files">Files</span>
+                </div>
+                <div class="flex items-center">
+                    <label for="language-selector" class="sr-only" data-i18n="Language:">Language:</label>
+                    <select id="language-selector" class="px-3 py-1.5 text-sm bg-gray-700 text-gray-100 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="en" data-i18n="English">English</option>
+                        <option value="fr" data-i18n="Français">Français</option>
+                        <option value="es" data-i18n="Español">Español</option>
+                        <option value="pt" data-i18n="Português">Português</option>
+                        <option value="it" data-i18n="Italiano">Italiano</option>
+                        <option value="de" data-i18n="Deutsch">Deutsch</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="main-content">
+
+        <!-- SPA Control Tab Content -->
+        <div id="spa-control-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Status Block and Information -->
+            <div class="space-y-6">
+                <!-- Status Block (LCD simulation) -->
+                <div class="status-block">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-sm text-gray-400" data-i18n="CURRENT STATUS">CURRENT STATUS</span>
+                        <span class="text-sm text-gray-400" id="current-time">09:33</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                 
+                        <div class="lcd-screen relative">
+                            <div class="temp-main" id="temp-actual">34°C</div>
+                            <div id="temp-target-overlay"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Virtual Temperature -->
+                <div class="text-center text-gray-300 pt-2 !mt-1">
+                    <span class="text-lg" data-i18n="Virtual:">Virtual: </span>
+                    <span class="text-xl font-bold" id="temp-virtual">34.9°C</span>
+                    <span class="ml-2 text-gray-400 cursor-help tooltip-hw" data-i18n-title="Estimated temperature, calculated from pump and environment data." title="Estimated temperature, calculated from pump and environment data."></span>
+                </div>
+
+                <!-- Physical Control Panel Lock Status -->
+                <div class="text-center text-gray-300 pt-1 !mt-1">
+                    <span class="text-lg mr-2" data-i18n="Physical Control Panel :">Physical Control Panel :</span>
+                      <span class="text-2xl mr-1 lock-icon-display" id="lock-icon">🔒</span>
+                    <span class="text-lg" id="lock-status-text" data-i18n="Locked">Locked</span>
+                </div>
+
+                <!-- Target & Ambient Controls -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="temp-control">
+                        <div class="text-lg font-semibold text-gray-300 mb-2" data-i18n="Target">Target</div>
+                        <button onclick="changeTemp('target', 1)">▲</button>
+                        <div class="temp-value" id="temp-target">38°C</div>
+                        <button onclick="changeTemp('target', -1)">▼</button>
+                    </div>
+
+                    <div class="temp-control">
+                        <div class="text-lg font-semibold text-gray-300 mb-2" data-i18n="Ambient">Ambient</div>
+                        <button onclick="changeTemp('ambient', 1)">▲</button>
+                        <div class="temp-value" id="temp-ambient">15°C</div>
+                        <button onclick="changeTemp('ambient', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Columns: Controls -->
+            <div class="lg:col-span-2">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    
+                    <!-- Heating Button -->
+                    <div class="control-btn btn-heating inactive" id="btn-heating" onclick="toggleCommand('toggleHeater')">
+                        <div class="text-4xl mb-2">🔥</div>
+                        <div class="text-lg font-semibold" data-i18n="Heating">Heating</div>
+                        <div class="text-sm mt-1" id="heating-action" data-i18n="Off">Off</div>
+                    </div>
+
+                    <!-- Pump Button -->
+                    <div class="control-btn btn-pump inactive" id="btn-pump" onclick="toggleCommand('togglePump')">
+                        <div class="text-4xl mb-2">💧</div>
+                        <div class="text-lg font-semibold" data-i18n="Pump">Pump</div>
+                        <div class="text-sm mt-1" id="pump-action" data-i18n="Off">Off</div>
+                    </div>
+
+                    <!-- Units Button -->
+                    <div class="control-btn btn-units" id="btn-units" onclick="toggleUnit()">
+                        <div class="text-5xl mb-2" id="unit-symbol">°C</div>
+                        <div class="text-lg font-semibold" data-i18n="Units">Units</div>
+                        <div class="text-sm mt-1" id="unit-action" data-i18n="Switch to °F">Switch to °F</div>
+                    </div>
+
+                    <!-- Bubbles Button -->
+                    <div class="control-btn btn-bubbles inactive" id="btn-bubbles" onclick="toggleCommand('toggleBubbles')">
+                        <div class="text-4xl mb-2">🫧</div>
+                        <div class="text-lg font-semibold" data-i18n="Bubbles">Bubbles</div>
+                        <div class="text-sm mt-1" id="bubbles-action" data-i18n="Off">Off</div>
+                    </div>
+
+                    <!-- Hydrojets Button -->
+                    <div class="control-btn btn-hydrojets inactive" id="btn-hydrojets" onclick="toggleCommand('toggleHydroJets')">
+                        <div class="text-4xl mb-2">🌊</div>
+                        <div class="text-lg font-semibold" data-i18n="Hydrojets">Hydrojets</div>
+                        <div class="text-sm mt-1" id="hydrojets-action" data-i18n="Off">Off</div>
+                    </div>
+
+                </div>
+
+                <!-- Brightness Control - Below the buttons, wider -->
+                <div class="brightness-control">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="text-lg font-semibold" data-i18n="Display Brightness:">Display Brightness:</div> 
+                        <div class="text-xl font-bold" id="brightness-value">7</div>
+                    </div>
+                    <input 
+                        type="range" 
+                        id="brightness-slider" 
+                        min="0" 
+                        max="8" 
+                        value="7"
+                        onchange="setBrightness(this.value)"
+                    >
+                </div>
+
+                <!-- Maintenance Overview (SPA Control Page) -->
+<div class="card mt-6">
+    <h3 class="text-xl font-semibold text-white mb-4" data-i18n="Maintenance Schedule">Maintenance Schedule</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+            <p class="text-gray-300 font-semibold mb-1" data-i18n="Chlorine:">Chlorine:</p>
+            <span id="maint-chlorine-date" class="text-sm text-gray-400"><span class="maint-date-label" data-i18n="Date:">Date:</span> N/A</span> <span id="maint-chlorine-status" class="text-sm text-gray-400 block"><span class="maint-status-label" data-i18n="Status:">Status:</span> N/A</span> <button class="reset-button" onclick="resetMaintenanceTimer('resetTimerChlorine')" data-i18n="Reset">Reset</button>
+        </div>
+        <div>
+            <p class="text-gray-300 font-semibold mb-1" data-i18n="Filter Change:">Filter Change:</p>
+            <span id="maint-filter-change-date" class="text-sm text-gray-400"><span class="maint-date-label" data-i18n="Date:">Date:</span> N/A</span>
+            <span id="maint-filter-change-status" class="text-sm text-gray-400 block"><span class="maint-status-label" data-i18n="Status:">Status:</span> N/A</span>
+            <button class="reset-button" onclick="resetMaintenanceTimer('resetTimerReplaceFilter')" data-i18n="Reset">Reset</button>
+        </div>
+        <div>
+            <p class="text-gray-300 font-semibold mb-1" data-i18n="Filter Rinse:">Filter Rinse:</p>
+            <span id="maint-filter-rinse-date" class="text-sm text-gray-400"><span class="maint-date-label" data-i18n="Date:">Date:</span> N/A</span>
+            <span id="maint-filter-rinse-status" class="text-sm text-gray-400 block"><span class="maint-status-label" data-i18n="Status:">Status:</span> N/A</span>
+            <button class="reset-button" onclick="resetMaintenanceTimer('resetTimerRinseFilter')" data-i18n="Reset">Reset</button>
+        </div>
+        <div>
+            <p class="text-gray-300 font-semibold mb-1" data-i18n="Filter Clean:">Filter Clean:</p>
+            <span id="maint-filter-clean-date" class="text-sm text-gray-400"><span class="maint-date-label" data-i18n="Date:">Date:</span> N/A</span>
+            <span id="maint-filter-clean-status" class="text-sm text-gray-400 block"><span class="maint-status-label" data-i18n="Status:">Status:</span> N/A</span>
+            <button class="reset-button" onclick="resetMaintenanceTimer('resetTimerCleanFilter')" data-i18n="Reset">Reset</button>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <!-- Hardware Tab Content -->
+        <div id="hardware-content" class="hidden">
+            <h2 class="text-2xl font-bold text-white mb-6" data-i18n="Hardware Configuration">Hardware Configuration</h2>
+
+            <div class="hw-section" id="cio-dsp-pcb-section">
+                <div class="flex items-center mb-4">
+                    <h3 class="flex-grow" data-i18n="Select your CIO and DSP / PCB model :">Select your CIO and DSP / PCB model :</h3>
+                    <button id="saveHardwareModelsBtn" class="section-save-btn" disabled onclick="saveHardwareConfigSection()" data-i18n="Save">Save</button>
+                </div>
+                <div class="mb-4">
+                    <label for="cio_model_select" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="CIO Model (pump) :">CIO Model (pump) :</label>
+                    <select id="cio_model_select" class="hw-select" onchange="setPins(); markHardwareSectionModified('cio-dsp-pcb-section')">
+                        <option value="0" data-i18n="6-wire, pre-2021 (air)">6-wire, pre-2021 (air)</option>
+                        <option value="1" data-i18n="6-wire, 2021 (air)">6-wire, 2021 (air)</option>
+                        <option value="2" data-i18n="6-wire, 2021 (air+jet)">6-wire, 2021 (air+jet)</option>
+                        <option value="3" data-i18n="6-wire, 54149E (air)">6-wire, 54149E (air)</option>
+                        <option value="4" data-i18n="4-wire, 54173 (air+jet)">4-wire, 54173 (air+jet)</option>
+                        <option value="5" data-i18n="4-wire, 54154 (air)">4-wire, 54154 (air)</option>
+                        <option value="6" data-i18n="4-wire, 54144 (jet)">4-wire, 54144 (jet)</option>
+                        <option value="7" data-i18n="4-wire, 54138 (air+jet)">4-wire, 54138 (air+jet)</option>
+                        <option value="8" data-i18n="4-wire, 54123 (air)">4-wire, 54123 (air)</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="dsp_model_select" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="DSP Model (display) :">DSP Model (display) :</label>
+                    <select id="dsp_model_select" class="hw-select" onchange="setPins(); markHardwareSectionModified('cio-dsp-pcb-section')">
+                        <option value="0" data-i18n="6-wire, pre-2021 (air)">6-wire, pre-2021 (air)</option>
+                        <option value="1" data-i18n="6-wire, 2021 (air)">6-wire, 2021 (air)</option>
+                        <option value="2" data-i18n="6-wire, 2021 (air+jet)">6-wire, 2021 (air+jet)</option>
+                        <option value="3" data-i18n="6-wire, 54149E (air)">6-wire, 54149E (air)</option>
+                        <option value="4" data-i18n="4-wire, 54173 (air+jet)">4-wire, 54173 (air+jet)</option>
+                        <option value="5" data-i18n="4-wire, 54154 (air)">4-wire, 54154 (air)</option>
+                        <option value="6" data-i18n="4-wire, 54144 (jet)">4-wire, 54144 (jet)</option>
+                        <option value="7" data-i18n="4-wire, 54138 (air+jet)">4-wire, 54138 (air+jet)</option>
+                        <option value="8" data-i18n="4-wire, 54123 (air)">4-wire, 54123 (air)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Select your PCB :">Select your PCB :</label>
+                    <div class="flex flex-wrap items-center" onchange="setPins(); markHardwareSectionModified('cio-dsp-pcb-section')">
+                        <input type="radio" id="v1" name="pcb" value="v1" class="hw-checkbox">
+                        <label for="v1" class="mr-4 text-gray-200" data-i18n="V1">V1</label>
+                        <input type="radio" id="v2" name="pcb" value="v2" class="hw-checkbox">
+                        <label for="v2" class="mr-4 text-gray-200" data-i18n="V2">V2</label>
+                        <input type="radio" id="v2b" name="pcb" value="v2b" class="hw-checkbox">
+                        <label for="v2b" class="mr-4 text-gray-200" data-i18n="V2B">V2B</label>
+                        <span class="tooltip-hw" data-i18n-title="Theoretically, any CIO can be combined with any DSP. Not tested, but cool if it works!" title="Theoretically, any CIO can be combined with any DSP. Not tested, but cool if it works!"></span>
+                        <input type="radio" id="custom" name="pcb" value="custom" class="hw-checkbox">
+                        <label for="custom" class="mr-4 text-gray-200" data-i18n="Custom">Custom</label>
+                        <span class="tooltip-hw" data-i18n-title="Same PCB as V2, but with wires moved to other pins for better compatibility with certain pumps" title="Same PCB as V2, but with wires moved to other pins for better compatibility with certain pumps"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hw-section" id="pinout-section">
+                <div class="flex items-center mb-4">
+                    <h3 data-i18n="Pin Assignment">Pin Assignment</h3>
+                    <button id="editPinoutBtn" class="edit-btn" onclick="togglePinoutEditMode(true)" data-i18n="Edit">Edit</button>
+                    <button id="savePinoutBtn" class="edit-btn save hidden" onclick="commitPinoutChanges(); saveHardwareConfigSection()" data-i18n="Save">Save</button>
+                    <button id="cancelPinoutBtn" class="edit-btn cancel hidden" onclick="togglePinoutEditMode(false)" data-i18n="Cancel">Cancel</button>
+                </div>
+                <p class="text-sm text-gray-400 mb-4" data-i18n="D0-D8 as marked on the ESP, but without the 'D'. The ESP will convert to GPIO numbers.">D0-D8 as marked on the ESP, but without the 'D'. The ESP will convert to GPIO numbers. <span class="tooltip-hw" data-i18n-title="D0-D8 as marked on the ESP, but without the 'D'. The ESP will convert to GPIO numbers." title="D0-D8 as marked on the ESP, but without the 'D'. The ESP will convert to GPIO numbers."></span></p>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-200 mb-2 text-center" data-i18n="CIO">CIO</h4>
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <div class="flex items-center">
+                            <span class="text-gray-300" data-i18n="data/td/rx">data/td/rx</span>
+                            <input type="text" id="pin1" maxlength="2" class="pin-input max-w-full" oninput="markHardwareSectionModified('pinout-section')">
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-gray-300" data-i18n="clk/tx">clk/tx</span>
+                            <input type="text" id="pin2" maxlength="2" class="pin-input max-w-full" oninput="markHardwareSectionModified('pinout-section')">
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-gray-300" data-i18n="cs/ld">cs/ld</span>
+                            <input type="text" id="pin3" maxlength="2" class="pin-input max-w-full" oninput="markHardwareSectionModified('pinout-section')">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-200 mb-2 text-center" data-i18n="DSP">DSP</h4>
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <div class="flex items-center">
+                            <span class="text-gray-300" data-i18n="data/td/tx">data/td/tx</span>
+                            <input type="text" id="pin4" maxlength="2" class="pin-input max-w-full" oninput="markHardwareSectionModified('pinout-section')">
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-gray-300" data-i18n="clk/rx">clk/rx</span>
+                            <input type="text" id="pin5" maxlength="2" class="pin-input max-w-full" oninput="markHardwareSectionModified('pinout-section')">
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-gray-300" data-i18n="cs/ld">cs/ld</span>
+                            <input type="text" id="pin6" maxlength="2" class="pin-input max-w-full" oninput="markHardwareSectionModified('pinout-section')">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-200 mb-2 text-center" data-i18n="Audio">Audio</h4>
+                    <div class="flex items-center justify-center">
+                        <input type="text" id="pin7" maxlength="2" class="pin-input max-w-full" oninput="markHardwareSectionModified('pinout-section')">
+                    </div>
+                </div>
+            </div>
+
+            <div class="hw-section" id="ambient-sensor-section">
+                <div class="flex items-center mb-4">
+                    <h3 data-i18n="One Wire Ambient Temperature Sensor">One Wire Ambient Temperature Sensor</h3>
+                    <button id="editAmbientSensorBtn" class="edit-btn" onclick="toggleAmbientSensorEditMode(true)" data-i18n="Edit">Edit</button>
+                    <button id="saveAmbientSensorBtn" class="edit-btn save hidden" onclick="commitAmbientSensorChanges(); saveHardwareConfigSection()" data-i18n="Save">Save</button>
+                    <button id="cancelAmbientSensorBtn" class="edit-btn cancel hidden" onclick="toggleAmbientSensorEditMode(false)" data-i18n="Cancel">Cancel</button>
+                </div>
+                <p class="text-sm text-gray-400 mb-4" data-i18n="Requires a DS18B20 sensor connected to the pin labeled 'Sensor Pin'. The sensor will periodically update the 'Ambient Temperature'.">Requires a DS18B20 sensor connected to the pin labeled 'Sensor Pin'. The sensor will periodically update the 'Ambient Temperature'. <span class="tooltip-hw" data-i18n-title="Requires a DS18B20 sensor connected to the pin labeled 'Sensor Pin'. The sensor will periodically update the 'Ambient Temperature'." title="Requires a DS18B20 sensor connected to the pin labeled 'Sensor Pin'. The sensor will periodically update the 'Ambient Temperature'."></span></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center gap-2">
+                        <label for="pin8" class="text-gray-300" data-i18n="Sensor Pin (Dx)">Sensor Pin (Dx)</label>
+                        <input type="text" id="pin8" maxlength="2" class="pin-input max-w-full" disabled="disabled" oninput="markHardwareSectionModified('ambient-sensor-section')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-300" data-i18n="Status:">Status:</span>
+                        <span class="block text-xs text-gray-400 mt-1" id="sensor_enable_text" data-i18n="Sensor Status">Sensor Status</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hw-section" id="power-levels-section">
+                <div class="flex items-center mb-4">
+                    <h3 data-i18n="Power Levels (in Watts)">Power Levels (in Watts)</h3>
+                    <button id="editPowerLevelsBtn" class="edit-btn" onclick="togglePowerLevelsEditMode(true)" data-i18n="Edit">Edit</button>
+                    <button id="savePowerLevelsBtn" class="edit-btn save hidden" onclick="commitPowerLevelsChanges(); saveHardwareConfigSection()" data-i18n="Save">Save</button>
+                    <button id="cancelPowerLevelsBtn" class="edit-btn cancel hidden" onclick="togglePowerLevelsEditMode(false)" data-i18n="Cancel">Cancel</button>
+                </div>
+                <p class="text-sm text-gray-400 mb-4" data-i18n="Customize power levels for different operating modes.">Customize power levels for different operating modes. <span class="tooltip-hw" data-i18n-title="Customize power levels for different operating modes." title="Customize power levels for different operating modes."></span></p>
+                <div class="text-center mb-4">
+                    <span id="power_override_text" class="text-gray-300 font-semibold" data-i18n="Custom Power Levels Active">Custom Power Levels Active</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="flex items-center gap-2">
+                        <label for="pwr_heater_stage1" class="text-gray-300 power-label" data-i18n="Heater 1">Heater 1</label>
+                        <input type="text" id="pwr_heater_stage1" maxlength="4" class="power-input-field max-w-full" inputmode="numeric" pattern="[0-9]{1,4}" disabled="disabled" oninput="markHardwareSectionModified('power-levels-section')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="pwr_heater_stage2" class="text-gray-300 power-label" data-i18n="Heater 2">Heater 2</label>
+                        <input type="text" id="pwr_heater_stage2" maxlength="4" class="power-input-field max-w-full" inputmode="numeric" pattern="[0-9]{1,4}" disabled="disabled" oninput="markHardwareSectionModified('power-levels-section')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="pwr_pump" class="text-gray-300 power-label" data-i18n="Pump">Pump</label>
+                        <input type="text" id="pwr_pump" maxlength="4" class="power-input-field max-w-full" inputmode="numeric" pattern="[0-9]{1,4}" disabled="disabled" oninput="markHardwareSectionModified('power-levels-section')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="pwr_idle" class="text-gray-300 power-label" data-i18n="Idle">Idle</label>
+                        <input type="text" id="pwr_idle" maxlength="4" class="power-input-field max-w-full" inputmode="numeric" pattern="[0-9]{1,4}" disabled="disabled" oninput="markHardwareSectionModified('power-levels-section')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="pwr_air" class="text-gray-300 power-label" data-i18n="Air">Air</label>
+                        <input type="text" id="pwr_air" maxlength="4" class="power-input-field max-w-full" inputmode="numeric" pattern="[0-9]{1,4}" disabled="disabled" oninput="markHardwareSectionModified('power-levels-section')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="pwr_jet" class="text-gray-300 power-label" data-i18n="Jets">Jets</label>
+                        <input type="text" id="pwr_jet" maxlength="4" class="power-input-field max-w-full" inputmode="numeric" pattern="[0-9]{1,4}" disabled="disabled" oninput="markHardwareSectionModified('power-levels-section')">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPA Configuration Tab Content -->
+        <div id="spa-config-content" class="hidden">
+            <!-- Energy Costs Card -->
+            <div class="spa-config-card" id="energy-costs-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <span data-i18n="Energy Costs">Energy Costs</span>
+                        <span class="tooltip-hw" data-i18n-title="Configure energy price to calculate spa running costs." title="Configure energy price to calculate spa running costs."></span>
+                    </h2>
+                    <button class="section-save-btn ml-auto" disabled onclick="saveSpaConfigSection('energy-costs-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="mb-4">
+                    <label for="kwh-price" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Price per kWh (€):">Price per kWh (€):</label>
+                    <input type="number" id="kwh-price" value="0.25" step="0.0001" class="w-full" oninput="markSpaSectionModified('energy-costs-section')">
+                </div>
+            </div>
+
+            <!-- Maintenance Intervals Card -->
+            <div class="spa-config-card" id="maintenance-intervals-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center">
+                        <span data-i18n="Maintenance Intervals">Maintenance Intervals</span>
+                        <span class="tooltip-hw" data-i18n-title="Define frequencies for spa maintenance tasks (e.g. chlorine, filter change, rinse, clean)." title="Define frequencies for spa maintenance tasks (e.g. chlorine, filter change, rinse, clean)."></span>
+                    </h2>
+                    <button class="section-save-btn ml-auto" disabled onclick="saveSpaConfigSection('maintenance-intervals-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="chlorine-days" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Chlorine (days):">Chlorine (days):</label>
+                        <input type="number" id="chlorine-days" value="7" class="w-full" oninput="markSpaSectionModified('maintenance-intervals-section')">
+                    </div>
+                    <div>
+                        <label for="filter-change-days" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Filter Change (days):">Filter Change (days):</label>
+                        <input type="number" id="filter-change-days" value="30" class="w-full" oninput="markSpaSectionModified('maintenance-intervals-section')">
+                    </div>
+                    <div>
+                        <label for="filter-rinse-days" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Filter Rinse (days):">Filter Rinse (days):</label>
+                        <input type="number" id="filter-rinse-days" value="3" class="w-full" oninput="markSpaSectionModified('maintenance-intervals-section')">
+                    </div>
+                    <div>
+                        <label for="filter-clean-days" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Filter Clean (days):">Filter Clean (days):</label>
+                        <input type="number" id="filter-clean-days" value="7" class="w-full" oninput="markSpaSectionModified('maintenance-intervals-section')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio and Notifications Card -->
+            <div class="spa-config-card" id="audio-notifications-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center"> <!-- Added flex items-center -->
+                        <span data-i18n="Audio and Notifications">Audio and Notifications</span>
+                        <span class="tooltip-hw" data-i18n-title="Manage button sound activation and visual notification duration." title="Manage button sound activation and visual notification duration."></span>
+                    </h2>
+                    <button class="section-save-btn ml-auto" disabled onclick="saveSpaConfigSection('audio-notifications-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="enable-sounds" class="mr-2" onchange="markSpaSectionModified('audio-notifications-section')">
+                        <label for="enable-sounds" class="text-gray-200" data-i18n="Enable Button Sounds">Enable Button Sounds</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="enable-notifications" class="mr-2" onchange="markSpaSectionModified('audio-notifications-section')">
+                        <label for="enable-notifications" class="text-gray-200" data-i18n="Enable Notifications">Enable Notifications</label>
+                    </div>
+                    <div class="flex items-center">
+                        <label for="notification-volume" class="mr-2 text-gray-200" data-i18n="Notification Duration (s):">Notification Duration (s):</label>
+                        <input type="range" id="notification-volume" min="0" max="100" value="50" class="w-32" oninput="markSpaSectionModified('audio-notifications-section')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Button Configuration Card -->
+            <div class="spa-config-card" id="display-button-config-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center"> <!-- Added flex items-center -->
+                        <span data-i18n="Display Button Configuration">Display Button Configuration</span>
+                        <span class="tooltip-hw" data-i18n-title="Allows you to physically disable spa control panel buttons you do not wish to use." title="Allows you to physically disable spa control panel buttons you do not wish to use."></span>
+                    </h2>
+                    <button class="section-save-btn ml-auto" disabled onclick="saveSpaConfigSection('display-button-config-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="flex items-center mb-4">
+                    <label class="toggle-switch mr-3">
+                        <input type="checkbox" id="activate-display-buttons" onchange="markSpaSectionModified('display-button-config-section')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <label for="activate-display-buttons" class="text-gray-200" data-i18n="Enable Display Panel Buttons">Enable Display Panel Buttons</label>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <div class="flex items-center" id="checkbox-power-container">
+                        <input type="checkbox" id="btn-power" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-power" class="text-gray-200" data-i18n="Power On/Off">Power On/Off</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-filter-container">
+                        <input type="checkbox" id="btn-filter" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-filter" class="text-gray-200" data-i18n="Filter/Pump">Filter/Pump</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-heating-container">
+                        <input type="checkbox" id="btn-heating" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-heating" class="text-gray-200" data-i18n="Heating">Heating</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-bubbles-container">
+                        <input type="checkbox" id="btn-bubbles" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-bubbles" class="text-gray-200" data-i18n="Bubbles">Bubbles</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-jets-container">
+                        <input type="checkbox" id="btn-jets" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-jets" class="text-gray-200" data-i18n="Hydrojets">Hydrojets</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-temp-plus-container">
+                        <input type="checkbox" id="btn-temp-plus" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-temp-plus" class="text-gray-200" data-i18n="Temp +">Temp +</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-temp-minus-container">
+                        <input type="checkbox" id="btn-temp-minus" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-temp-minus" class="text-gray-200" data-i18n="Temp -">Temp -</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-lock-container">
+                        <input type="checkbox" id="btn-lock" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-lock" class="text-gray-200" data-i18n="Lock">Lock</label>
+                    </div>
+                     <div class="flex items-center" id="checkbox-unit-container">
+                        <input type="checkbox" id="btn-unit" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-unit" class="text-gray-200" data-i18n="Unit">Unit</label>
+                    </div>
+                    <div class="flex items-center" id="checkbox-timer-container">
+                        <input type="checkbox" id="btn-timer" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-timer" class="text-gray-200" data-i18n="Timer">Timer</label>
+                    </div>
+                </div>
+
+                <!-- Visual representation of buttons -->
+                <div class="display-button-visual-container">
+                    <button class="display-button-visual" id="visual-btn-power">
+                        <span class="icon">🔌</span>
+                        <span data-i18n="Power On/Off">Power On/Off</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-filter">
+                        <span class="icon">💧</span>
+                        <span data-i18n="Filter/Pump">Filter/Pump</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-heating">
+                        <span class="icon">🔥</span>
+                        <span data-i18n="Heating">Heating</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-bubbles">
+                        <span class="icon">🫧</span>
+                        <span data-i18n="Bubbles">Bubbles</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-jets">
+                        <span class="icon">🌊</span>
+                        <span data-i18n="Hydrojets">Hydrojets</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-temp-plus">
+                        <span class="icon">➕</span>
+                        <span data-i18n="Temp +">Temp +</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-temp-minus">
+                        <span class="icon">➖</span>
+                        <span data-i18n="Temp -">Temp -</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-lock">
+                        <span class="icon">🔒</span>
+                        <span data-i18n="Lock">Lock</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-unit">
+                        <span class="icon">🌡️</span>
+                        <span data-i18n="Unit">Unit</span>
+                    </button>
+                    <button class="display-button-visual" id="visual-btn-timer">
+                        <span class="icon">⏱️</span>
+                        <span data-i18n="Timer">Timer</span>
+                    </button>
+                </div>
+
+                <p class="text-sm text-gray-400 mt-6" data-i18n="These icons represent the physical buttons on your spa control panel. The 'Enable Display Panel Buttons' option controls the overall responsiveness of the physical panel. Individual checkboxes control whether each physical button is interactive or disabled.">
+                    These icons represent the physical buttons on your spa control panel. The "Enable Display Panel Buttons" option controls the overall responsiveness of the physical panel. Individual checkboxes control whether each physical button is interactive or disabled.
+                </p>
+            </div>
+
+            <!-- Virtual Temperature Calibration Card -->
+            <div class="spa-config-card" id="virtual-temp-calibration-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center"> <!-- Added flex items-center -->
+                        <span data-i18n="Virtual Temperature Calibration">Virtual Temperature Calibration</span>
+                        <span class="tooltip-hw" data-i18n-title="If checked, virtual temperature is calibrated. To recalibrate, uncheck and save. Calibrate by keeping the heater OFF and the pump ON until the temperature has dropped a few degrees. Do not activate jets, bubbles, etc. during this time. Water temperature should differ by several degrees from ambient temperature at the beginning." title="If checked, virtual temperature is calibrated. To recalibrate, uncheck and save. Calibrate by keeping the heater OFF and the pump ON until the temperature has dropped a few degrees. Do not activate jets, bubbles, etc. during this time. Water temperature should differ by several degrees from ambient temperature at the beginning."></span>
+                    </h2>
+                    <button class="section-save-btn ml-auto" disabled onclick="saveSpaConfigSection('virtual-temp-calibration-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="mb-4">
+                    <input type="checkbox" id="calibrated-checkbox" class="mr-2" onchange="markSpaSectionModified('virtual-temp-calibration-section')">
+                    <label for="calibrated-checkbox" class="text-gray-200" data-i18n="Calibrated">Calibrated</label>
+                </div>
+            </div>
+
+            <!-- Scheduled Command Queue System Card - RESTORED -->
+            <div class="spa-config-card">
+                <h2 class="text-xl font-semibold text-white mb-4 flex items-center"> <!-- Added flex items-center -->
+                    <span data-i18n="Scheduled Command Queue System">Scheduled Command Queue System</span>
+                    <span class="tooltip-hw" data-i18n-title="Schedule custom commands (e.g., activate bubbles, change temperature) to execute at specific times." title="Schedule custom commands (e.g., activate bubbles, change temperature) to execute at specific times."></span>
+                </h2>
+                
+                <h3 class="text-lg font-semibold text-white mb-3" data-i18n="Command Queue Management">Command Queue Management</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="command-select" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Command:">Command:</label>
+                        <select id="command-select" class="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600">
+                            <option value="setTarget" data-i18n="Set target temp (20-40/68-104)">Set target temp (20-40/68-104)</option>
+                            <option value="toggleUnit" data-i18n="Toggle units (°C/°F)">Toggle units (°C/°F)</option>
+                            <option value="toggleBubbles" data-i18n="Toggle bubbles">Toggle bubbles</option>
+                            <option value="toggleHeater" data-i18n="Toggle heater">Toggle heater</option>
+                            <option value="togglePump" data-i18n="Toggle pump">Toggle pump</option>
+                            <option value="toggleLock" data-i18n="Toggle lock">Toggle lock</option>
+                            <option value="toggleHydroJets" data-i18n="Toggle hydrojets">Toggle hydrojets</option>
+                            <option value="setBrightness" data-i18n="Set brightness (0-8)">Set brightness (0-8)</option>
+                            <option value="setBeep" data-i18n="Set beep (0/1 or 2+text=filename)">Set beep (0/1 or 2+text=filename)</option>
+                            <option value="setAmbientC" data-i18n="Set ambient temp (°C)">Set ambient temp (°C)</option>
+                            <option value="setAmbientF" data-i18n="Set ambient temp (°F)">Set ambient temp (°F)</option>
+                            <option value="resetTotals" data-i18n="Reset totals">Reset totals</option>
+                            <option value="resetTimerChlorine" data-i18n="Reset chlorine timer">Reset chlorine timer</option>
+                            <option value="resetTimerReplaceFilter" data-i18n="Reset filter replacement timer">Reset filter replacement timer</option>
+                            <option value="resetTimerRinseFilter" data-i18n="Reset filter rinse timer">Reset filter rinse timer</option>
+                            <option value="resetTimerCleanFilter" data-i18n="Reset filter clean timer">Reset filter clean timer</option>
+                            <option value="restartEsp" data-i18n="Restart ESP">Restart ESP</option>
+                            <option value="toggleGodmode" data-i18n="Toggle Godmode">Toggle Godmode</option>
+                            <option value="setFullpower" data-i18n="Set full power">Set full power</option>
+                            <option value="printText" data-i18n="Display text">Display text</option>
+                            <option value="setReady" data-i18n="Set ready">Set ready</option>
+                            <option value="setR" data-i18n="Set R">Set R</option>
+                            <option value="setPower" data-i18n="Set power on/off (0/1)">Set power on/off (0/1)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="command-value" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Value:">Value:</label>
+                        <input type="text" id="command-value" placeholder="Enter value if applicable (0/1, temp, text...)" class="w-full" data-i18n-placeholder="Enter value if applicable (0/1, temp, text...)">
+                    </div>
+                    <div>
+                        <label for="execution-time" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Execution Time:">Execution Time:</label>
+                        <input type="datetime-local" id="execution-time" class="w-full">
+                    </div>
+                    <div>
+                        <label for="repeat-interval" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Repeat Interval (seconds):">Repeat Interval (seconds):</label>
+                        <input type="number" id="repeat-interval" value="0" class="w-full">
+                        <p class="text-xs text-gray-500 mt-1" data-i18n="(0=once, 1h=3600, 1d=86400, 1w=604800)">(0=once, 1h=3600, 1d=86400, 1w=604800)</p>
+                    </div>
+                </div>
+                <button id="add-command-btn" class="spa-config-card .command-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mb-4" data-i18n="Add to Queue">Add to Queue</button>
+
+                <div id="command-queue-display">
+                    <!-- Scheduled commands will be dynamically added here -->
+                    <div class="command-queue-info-box bg-gray-700 p-4 rounded-lg text-gray-300 mb-4" id="empty-queue-message-container">
+                        <p class="text-center" id="empty-queue-message" data-i18n="Command queue is empty">Command queue is empty</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-center space-x-4">
+                    <button id="clear-queue-btn" class="spa-config-card .command-btn button_red bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg" data-i18n="Clear Queue">Clear Queue</button>
+                    <button id="save-queue-btn" class="spa-config-card .command-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg" data-i18n="Save to File">Save to File</button>
+                    <button id="load-queue-btn" class="spa-config-card .command-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg" data-i18n="Load from File">Load from File</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Connectivity Section -->
+        <div id="connectivity-content" class="hidden">
+            <h2 class="text-2xl font-bold text-white mb-6" data-i18n="Connectivity Configuration">Connectivity Configuration</h2>
+            
+            <div class="card" id="access-point-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center flex-grow">
+                        <span data-i18n="Access Point">Access Point</span>
+                        <span class="tooltip-hw" data-i18n-title="Checked: ESP will connect using these credentials. Unchecked: ESP will use the last known credentials." title="Checked: ESP will connect using these credentials. Unchecked: ESP will use the last known credentials."></span>
+                    </h2>
+                    <button id="saveAccessPointBtn" class="section-save-btn" disabled onclick="saveConnectivitySection('access-point-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="mb-4 flex items-center">
+                    <label for="enableAp" class="text-gray-300 mr-2" data-i18n="Enable Specific Access Point:">Enable Specific Access Point:</label>
+                    <input type="checkbox" id="enableAp" class="mr-2" onchange="markConnectivitySectionModified('access-point-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="apSsid" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="SSID :">SSID :</label>
+                    <input type="text" id="apSsid" class="w-full" oninput="markConnectivitySectionModified('access-point-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="apPwd" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Password :">Password :</label>
+                    <input type="password" id="apPwd" class="w-full" oninput="markConnectivitySectionModified('access-point-section')" data-i18n-placeholder="<enter password>" placeholder="<enter password>">
+                    <button onclick="togglePlainText('apPwd')" class="text-sm text-blue-400 hover:underline mt-1" data-i18n="Show/Hide Password" data-i18n-toggle-password="Show/Hide Password">Show/Hide Password</button>
+                </div>
+            </div>
+
+            <div class="card" id="soft-ap-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center flex-grow">
+                        <span data-i18n="Soft Access Point">Soft Access Point</span>
+                        <span class="tooltip-hw" data-i18n-title="Enable ESP access point to be able to open this page before your network credentials are set. Normally, you would want this enabled! If your network is unavailable, the ESP will start its own access point." title="Enable ESP access point to be able to open this page before your network credentials are set. Normally, you would want this enabled! If your network is unavailable, the ESP will start its own access point."></span>
+                    </h2>
+                    <button id="saveSoftApBtn" class="section-save-btn" disabled onclick="saveConnectivitySection('soft-ap-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="flex items-center mb-4">
+                    <label for="enableWM" class="text-gray-300 mr-2" data-i18n="Enable Soft AP (do not uncheck, you might lock yourself out!) :">Enable Soft AP (do not uncheck, you might lock yourself out!) :</label>
+                    <input type="checkbox" id="enableWM" class="mr-2" onchange="markConnectivitySectionModified('soft-ap-section')">
+                </div>
+            </div>
+
+            <div class="card" id="static-ip-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center flex-grow">
+                        <span data-i18n="Static IP">Static IP</span>
+                        <span class="tooltip-hw" data-i18n-title="Allows setting a fixed IP address for the ESP instead of obtaining one via DHCP." title="Allows setting a fixed IP address for the ESP instead of obtaining one via DHCP."></span>
+                    </h2>
+                    <button id="saveStaticIpBtn" class="section-save-btn" disabled onclick="saveConnectivitySection('static-ip-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="mb-4 flex items-center">
+                    <label for="enableStaticIp4" class="text-gray-300 mr-2" data-i18n="Enable Static IP:">Enable Static IP:</label>
+                    <input type="checkbox" id="enableStaticIp4" class="mr-2" onchange="markConnectivitySectionModified('static-ip-section')">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label for="ip4Address" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="IP Address :">IP Address :</label>
+                        <input type="text" id="ip4Address" maxlength="15" class="w-full" oninput="markConnectivitySectionModified('static-ip-section')" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+                    </div>
+                    <div class="mb-4">
+                        <label for="ip4Gateway" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Gateway IP Address :">Gateway IP Address :</label>
+                        <input type="text" id="ip4Gateway" maxlength="15" class="w-full" oninput="markConnectivitySectionModified('static-ip-section')" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+                    </div>
+                    <div class="mb-4">
+                        <label for="ip4Subnet" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Subnet Mask :">Subnet Mask :</label>
+                        <input type="text" id="ip4Subnet" maxlength="15" class="w-full" oninput="markConnectivitySectionModified('static-ip-section')" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+                    </div>
+                    <div class="mb-4">
+                        <label for="ip4DnsPrimary" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="DNS Server (Primary) :">DNS Server (Primary) :</label>
+                        <input type="text" id="ip4DnsPrimary" maxlength="15" class="w-full" oninput="markConnectivitySectionModified('static-ip-section')" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+                    </div>
+                    <div class="mb-4">
+                        <label for="ip4DnsSecondary" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="DNS Server (Secondary) :">DNS Server (Secondary) :</label>
+                        <input type="text" id="ip4DnsSecondary" maxlength="15" class="w-full" oninput="markConnectivitySectionModified('static-ip-section')" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="ntp-server-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center flex-grow">
+                        <span data-i18n="NTP Server">NTP Server</span>
+                        <span class="tooltip-hw" data-i18n-title="Leave empty for default (pool.ntp.org) or set your preferred NTP server." title="Leave empty for default (pool.ntp.org) or set your preferred NTP server."></span>
+                    </h2>
+                    <button id="saveNtpServerBtn" class="section-save-btn" disabled onclick="saveConnectivitySection('ntp-server-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="mb-4">
+                    <label for="ip4NTP" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="Domain Name or IP Address :">Domain Name or IP Address :</label>
+                    <input type="text" id="ip4NTP" maxlength="30" class="w-full" value="pool.ntp.org" oninput="markConnectivitySectionModified('ntp-server-section')">
+                </div>
+            </div>
+
+            <!-- MQTT Configuration Section -->
+            <div class="card" id="mqtt-config-section">
+                <div class="flex items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white flex items-center flex-grow">
+                        <span data-i18n="MQTT Configuration">MQTT Configuration</span>
+                        <span class="tooltip-hw" data-i18n-title="Configure settings for MQTT connection." title="Configure settings for MQTT connection."></span>
+                    </h2>
+                    <button id="saveMqttConfigBtn" class="section-save-btn" disabled onclick="saveConnectivitySection('mqtt-config-section')" data-i18n="Save">Save</button>
+                </div>
+                <div class="mb-4 flex items-center">
+                    <label for="enableMqtt" class="text-gray-300 mr-2" data-i18n="Enable MQTT :">Enable MQTT :</label>
+                    <input type="checkbox" id="enableMqtt" class="mr-2" onchange="markConnectivitySectionModified('mqtt-config-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="mqttHost" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="MQTT Host (IP or FQDN) :">MQTT Host (IP or FQDN) :</label>
+                    <input type="text" id="mqttHost" maxlength="63" class="w-full" oninput="markConnectivitySectionModified('mqtt-config-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="mqttPort" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="MQTT Port :">MQTT Port :</label>
+                    <input type="number" id="mqttPort" min="1" max="65535" class="w-full" oninput="markConnectivitySectionModified('mqtt-config-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="mqttUsername" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="MQTT Username :">MQTT Username :</label>
+                    <input type="text" id="mqttUsername" maxlength="31" class="w-full" oninput="markConnectivitySectionModified('mqtt-config-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="mqttPassword" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="MQTT Password :">MQTT Password :</label>
+                    <input type="password" id="mqttPassword" maxlength="31" class="w-full" oninput="markConnectivitySectionModified('mqtt-config-section')" data-i18n-placeholder="<enter password>" placeholder="<enter password>">
+                    <button onclick="togglePlainText('mqttPassword')" class="text-sm text-blue-400 hover:underline mt-1" data-i18n="Show/Hide Password" data-i18n-toggle-password="Show/Hide Password">Show/Hide Password</button>
+                </div>
+                <div class="mb-4">
+                    <label for="mqttClientId" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="MQTT Client ID :">MQTT Client ID :</label>
+                    <input type="text" id="mqttClientId" maxlength="31" class="w-full" oninput="markConnectivitySectionModified('mqtt-config-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="mqttBaseTopic" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="MQTT Base Topic :">MQTT Base Topic :</label>
+                    <input type="text" id="mqttBaseTopic" maxlength="31" class="w-full" oninput="markConnectivitySectionModified('mqtt-config-section')">
+                </div>
+                <div class="mb-4">
+                    <label for="mqttTelemetryInterval" class="block text-gray-400 text-sm font-bold mb-2" data-i18n="MQTT Telemetry Interval (s) :">MQTT Telemetry Interval (s) :</label>
+                    <input type="number" id="mqttTelemetryInterval" min="0" class="w-full" oninput="markConnectivitySectionModified('mqtt-config-section')">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-xl font-semibold text-white mb-4" data-i18n="Reset WiFi Configuration :">Reset WiFi Configuration :</h2>
+                <p class="text-gray-400 mb-4" data-i18n="This button removes WiFi credentials. The ESP will restart and enable its own AP (if checked above). Connect to the WiFi AP with SSID 'layzspa_module######' and access http://192.168.4.2/wifi.html.">
+                    This button removes WiFi credentials. The ESP will restart and enable its own AP (if checked above). Connect to the WiFi AP with SSID "layzspa_module######" and access http://192.168.4.2/wifi.html.
+                </p>
+                <button id="resetwifi" class="button_red bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg" onclick="resetWifi()" data-i18n="Reset WiFi">Reset WiFi</button>
+            </div>
+        </div>
+
+        <!-- Files Section -->
+        <div id="files-content" class="hidden">
+            <h2 class="text-2xl font-bold text-white mb-6" data-i18n="File Management">File Management</h2>
+
+            <!-- File Upload Section -->
+            <div class="card mb-6">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                    <span data-i18n="Upload File">Upload File</span>
+                    <span class="tooltip-hw" data-i18n-title="Use this section to upload new files (firmware, configurations) to the ESP. Compressed files (.gz) are supported." title="Use this section to upload new files (firmware, configurations) to the ESP. Compressed files (.gz) are supported."></span>
+                </h3>
+                <form id="uploadForm" class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <label for="fileInput" class="button bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer" data-i18n="Select a file...">
+                        Select a file...
+                    </label>
+                    <input type="file" id="fileInput" name="file" class="hidden" accept=".txt,.gz,.html,.ico,.js,.css,.mel,.png,.json,.bin">
+                    <span id="fileNameDisplay" class="text-gray-400 flex-grow text-center sm:text-left" data-i18n="No file selected">No file selected</span>
+                    <button type="submit" class="button bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <span data-i18n="↑ Upload">↑ Upload</span>
+                    </button>
+                </form>
+                <p class="text-sm text-gray-400 mt-4" data-i18n="You can use compressed files (files with a .gz extension) to save space and bandwidth.">You can use compressed files (files with a .gz extension) to save space and bandwidth.</p>
+            </div>
+
+            <!-- File Explorer Section -->
+            <div class="card">
+                <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                    <span data-i18n="Files on ESP Module">Files on ESP Module</span>
+                    <span class="tooltip-hw" data-i18n-title="List of files currently stored on the ESP. You can download or delete them." title="List of files currently stored on the ESP. You can download or delete them."></span>
+                </h3>
+                <div id="file-list-container" class="overflow-x-auto">
+                    <table class="w-full text-left text-gray-300">
+                        <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 rounded-tl-lg" data-i18n="File Name">File Name</th>
+                                <th scope="col" class="px-6 py-3" data-i18n="Size">Size</th>
+                                <th scope="col" class="px-6 py-3 rounded-tr-lg" data-i18n="Actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filesTableBody">
+
+                            <tr id="loading-files-row">
+                                <td colspan="3" class="px-6 py-4 text-center" data-i18n="Loading files...">Loading files...</td>
+                            </tr>
+                            <tr id="no-files-row" class="hidden">
+                                <td colspan="3" class="px-6 py-4 text-center" data-i18n="No files found.">No files found.</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="custom-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm">
+            <h3 id="modal-title" class="text-lg font-bold text-white mb-4"></h3>
+            <p id="modal-message" class="text-gray-300 mb-6"></p>
+            <input type="text" id="modal-input" class="hidden w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600 mb-4" data-i18n-placeholder="Enter file name" placeholder="Enter file name">
+            <select id="modal-select" class="hidden w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600 mb-4"></select>
+            <div id="modal-spinner" class="hidden text-center mb-4">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button id="modal-cancel-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-md" data-i18n="Cancel">Cancel</button>
+                <button id="modal-confirm-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md" data-i18n="OK">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/50 backdrop-blur-sm border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="text-center text-sm text-gray-400" id="footer-info" data-i18n="© 2025 Lay-Z-Spa Control. All rights reserved.">
+                © 2025 - Lay-Z-Spa Module by visualapproach / Ui by Dodemodexter
+
+            </div>
+        </div>
+    </footer>
+    <script src="i18nV2.js"></script>
+	<script src="scripts.js"></script>
+</body>
+</html>
