@@ -2,6 +2,8 @@
 
 ## Available UI Versions
 
+![screenshot](https://raw.githubusercontent.com/dodemodexter/WiFi-remote-for-Bestway-Lay-Z-SPA/master/Code/Screenshots/Screen02.png)
+
 ### 🔵 Modern UI (v2 - Full Redesign)
 Location: `/Code/data_v2ui/`  
 Maintained by @dodemodexter  
