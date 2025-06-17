@@ -1,0 +1,1062 @@
+/* ========================================= */
+/* BASE STYLES */
+/* ========================================= */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0c4a6e 0%, #1e3a8a 50%, #1e1b4b 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.logo {
+    width: 60px !important;
+    height: 60px !important;
+}
+
+/* ========================================= */
+/* NAVIGATION */
+/* ========================================= */
+
+.nav-tab {
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    background: transparent;
+}
+
+.nav-tab.active {
+    background: #3b82f6;
+    color: white;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.nav-tab:hover:not(.active) {
+    color: #9ca3af;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* ========================================= */
+/* CARDS & CONTAINERS */
+/* ========================================= */
+
+.card, .spa-config-card, .hw-section {
+    background-color: #1a202c;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: none;
+}
+
+.status-block {
+    background-color: #1a202c;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: none;
+    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ========================================= */
+/* INPUTS & FORM ELEMENTS */
+/* ========================================= */
+
+input[type="number"], 
+input[type="text"], 
+input[type="password"],
+select,
+input[type="datetime-local"] {
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    color: #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="number"]:focus, 
+input[type="text"]:focus, 
+input[type="password"]:focus,
+select:focus, 
+input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+input[type="number"]:disabled,
+input[type="text"]:disabled,
+input[type="password"]:disabled,
+select:disabled {
+    background-color: #374151;
+    color: #9ca3af;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 8px;
+    background: #4b5563;
+    border-radius: 4px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.7);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.7);
+    border: none;
+}
+
+.spa-config-card select {
+    color: #e2e8f0;
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+}
+
+.spa-config-card select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.spa-config-card input[type="range"] {
+    background: #4b5563;
+}
+
+/* ========================================= */
+/* BUTTONS */
+/* ========================================= */
+
+.control-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.control-button:hover {
+    background-color: #2563eb;
+}
+
+.section-save-btn {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    margin-left: auto;
+}
+
+.section-save-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.5);
+}
+
+.section-save-btn:disabled {
+    background: #4b5563;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.edit-btn {
+    background-color: #f59e0b;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-left: 1rem;
+}
+
+.edit-btn.save { background-color: #22c55e; }
+.edit-btn.cancel { background-color: #6b7280; }
+.edit-btn:hover { opacity: 0.9; }
+
+.reset-button {
+    background-color: #3b82f6;
+    color: white;
+    font-weight: bold;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 0.75rem;
+    border: none;
+    cursor: pointer;
+}
+
+.reset-button:hover {
+    background-color: #2164a7;
+}
+
+/* ========================================= */
+/* SPA CONTROL ELEMENTS */
+/* ========================================= */
+
+.lcd-screen {
+    background: linear-gradient(135deg, #111827, #1f2937);
+    border: 3px solid #374151;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 5px rgba(239, 68, 68, 0.3);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.temp-main {
+    font-size: 10rem;
+    line-height: 1;
+    color: #FF0020;
+    text-shadow: 0 0 8px rgba(255, 0, 32, 0.7), 0 0 15px rgba(255, 0, 32, 0.3);
+    font-family: 'Jersey 10', sans-serif;
+}
+
+.temp-control {
+    background-color: #1a202c;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.temp-control button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    width: 120px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 0.5rem 0;
+    transition: background-color 0.2s;
+}
+
+.temp-control button:hover {
+    background-color: #2563eb;
+}
+
+.temp-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    margin: 0.5rem 0;
+}
+
+.control-btn {
+    background-color: #1a202c;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    color: #e2e8f0;
+    transition: background-color 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Control button states */
+.btn-heating.active { background-color: #FF0020; }
+.btn-heating.standby { background-color: #10b981; }
+.btn-heating.inactive { background-color: #374151; }
+.btn-pump.active { background-color: #3b82f6; }
+.btn-pump.inactive { background-color: #374151; }
+.btn-bubbles.active { background-color: #a855f7; }
+.btn-bubbles.inactive { background-color: #374151; }
+.btn-hydrojets.active { background-color: #10b981; }
+.btn-hydrojets.inactive { background-color: #374151; }
+
+.brightness-control {
+    background-color: #1a202c;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.brightness-control .text-lg.font-semibold,
+.brightness-control .text-xl.font-bold {
+    color: #e2e8f0; 
+}
+
+/* ========================================= */
+/* TOGGLE SWITCH */
+/* ========================================= */
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #3b82f6;
+}
+
+input:focus + .toggle-slider {
+    box-shadow: 0 0 1px #3b82f6;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+/* ========================================= */
+/* DISPLAY BUTTONS VISUAL */
+/* ========================================= */
+
+.display-button-visual-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.display-button-visual {
+    background: linear-gradient(135deg, #374151, #4b5563);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-weight: 500;
+    color: white;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    font-size: 0.75rem;
+    opacity: 1;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    filter: grayscale(0%);
+    cursor: pointer; 
+}
+
+.display-button-visual.disabled-by-config {
+    opacity: 0.5; 
+    filter: grayscale(100%); 
+    cursor: not-allowed; 
+    background: linear-gradient(135deg, #374151, #4b5563);
+}
+
+.display-button-visual.active-color {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.display-button-visual .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Styling for disabled checkboxes and their labels */
+.spa-config-card input[type="checkbox"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.spa-config-card input[type="checkbox"]:disabled + label {
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* ========================================= */
+/* COMMAND QUEUE STYLES */
+/* ========================================= */
+
+.spa-config-card .command-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.spa-config-card .command-btn:hover {
+    background-color: #2563eb;
+}
+
+.spa-config-card .command-btn.button_red {
+    background: #ef4444;
+}
+
+.spa-config-card .command-btn.button_red:hover {
+    background: #dc2626;
+}
+
+.spa-config-card .command-queue-info-box {
+    background-color: #2d3748;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color: #e2e8f0;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.spa-config-card .scheduled-command-entry {
+    background-color: #4a5568;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #e2e8f0;
+}
+
+.spa-config-card .scheduled-command-entry button {
+    background: none;
+    border: none;
+    color: #f87171;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.spa-config-card .scheduled-command-entry button:hover {
+    color: #ef4444;
+}
+
+/* ========================================= */
+/* TOOLTIPS */
+/* ========================================= */
+
+.tooltip-hw {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    color: #9ca3af;
+}
+
+.tooltip-hw::before {
+    content: '?';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    background-color: #3b82f6;
+    color: white;
+    font-size: 0.75rem;
+    position: relative;
+    top: -0.1rem;
+    left: -0.2rem;
+}
+
+.tooltip-hw:hover::after {
+    content: attr(title);
+    position: absolute;
+    background-color: #3b82f6;
+    color: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    z-index: 10;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 125%;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.info-icon {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    margin-left: 0.5rem;
+    color: #9ca3af;
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+.info-icon:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 999;
+}
+
+.info-icon:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 115%;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent #333;
+    opacity: 1;
+    visibility: visible;
+    z-index: 998;
+}
+
+/* ========================================= */
+/* HARDWARE SECTION */
+/* ========================================= */
+
+.hw-section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.hw-section label {
+    color: #e2e8f0;
+}
+
+.hw-select {
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    color: #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.hw-checkbox {
+    margin-right: 0.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: #3b82f6;
+}
+
+.pin-input {
+    width: 80px;
+    margin-left: 0.5rem;
+    text-align: center;
+}
+
+.pin-input:disabled {
+    background-color: #374151;
+    color: #9ca3af;
+    opacity: 0.7;
+}
+
+.power-input-field {
+    width: 80px;
+}
+
+.power-label {
+    min-width: 90px;
+    text-align: right;
+}
+
+/* ========================================= */
+/* FILE MANAGEMENT */
+/* ========================================= */
+
+.file-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.file-list-table th, .file-list-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #4a5568;
+    color: #e2e8f0;
+}
+
+.file-list-table th {
+    background-color: #2d3748;
+    font-weight: 600;
+}
+
+.file-list-table tbody tr:hover {
+    background-color: #2d3748;
+}
+
+.file-list-table .view-file-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-right: 0.5rem;
+}
+
+.file-list-table .view-file-btn:hover {
+    background-color: #2563eb;
+}
+
+.file-list-table .delete-file-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.file-list-table .delete-file-btn:hover {
+    background-color: #dc2626;
+}
+
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.file-input-button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.file-input-button:hover {
+    background-color: #2563eb;
+}
+
+.file-upload-btn {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.file-upload-btn:hover {
+    background-color: #16a34a;
+}
+
+/* ========================================= */
+/* MQTT SECTION STYLES */
+/* ========================================= */
+
+.mqtt-config-card .form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.mqtt-config-card .form-row label {
+    color: #e2e8f0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.mqtt-config-card .form-row input[type="text"],
+.mqtt-config-card .form-row input[type="password"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 0.375rem;
+    color: #e2e8f0;
+}
+
+.mqtt-config-card .form-row input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+    accent-color: #3b82f6;
+}
+
+.mqtt-config-card .password-toggle-btn {
+    color: #60a5fa;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.mqtt-config-card .section-save-btn {
+    margin-top: 1rem;
+}
+
+/* Ensure maintenance item titles are visible */
+.spa-config-card p.text-gray-300.font-semibold {
+    color: #e2e8f0;
+}
+
+/* Ensure maintenance status text is visible */
+.spa-config-card span.text-sm.text-gray-400 {
+    color: #cbd5e0;
+}
+
+/* ========================================= */
+/* MOBILE RESPONSIVE STYLES */
+/* ========================================= */
+
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    h1 svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+}
+
+
+@media (max-width: 768px) {
+    /* Base layout fixes */
+    body {
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    main {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+	
+	
+
+    /* Navigation adjustments */
+    .nav-tab {
+        min-width: unset;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .nav-text {
+        display: none;
+    }
+    
+    .nav-icon {
+        font-size: 1.25rem;
+        margin-right: 0 !important;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Header responsive */
+    header .flex-col.sm\:flex-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Control buttons grid */
+    #spa-control-content .grid-cols-2 {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    /* Hardware section inputs */
+    .pin-input,
+    .power-input-field {
+        width: 100%;
+        max-width: 80px;
+        margin-left: 0;
+        margin-top: 0.25rem;
+    }
+
+    .hw-section .flex.flex-wrap {
+        justify-content: center;
+    }
+
+    .hw-section .flex.items-center {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Power levels section */
+    #power-levels-section .grid {
+        grid-template-columns: 1fr;
+    }
+
+    #power-levels-section .flex.items-center.gap-2 {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .power-label {
+        text-align: left;
+    }
+
+    /* Range sliders - FIX PRINCIPAL */
+    input[type="range"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .brightness-control input[type="range"] {
+        width: calc(100% - 1rem) !important;
+        margin: 0 0.5rem !important;
+    }
+
+    /* Tooltips - FIX PRINCIPAL */
+    .tooltip-hw:hover::after {
+        white-space: normal !important;
+        width: 200px !important;
+        max-width: 250px !important;
+        min-width: 200px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: 110% !important;
+        padding: 6px 8px !important;
+        font-size: 0.8rem !important;
+        line-height: 1.2 !important;
+        box-sizing: border-box !important;
+        word-wrap: break-word;
+        text-align: center;
+        background-color: #3b82f6;
+    }
+
+    .tooltip-hw::before {
+        bottom: 105% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+
+    .hw-section .flex-wrap .tooltip-hw {
+        position: relative;
+        top: unset;
+        left: unset;
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+
+    .hw-section .flex-wrap .tooltip-hw::after,
+    .hw-section .flex-wrap .tooltip-hw::before {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .info-icon::after {
+        white-space: normal !important;
+        max-width: 200px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        word-wrap: break-word;
+        text-align: center;
+        font-size: 0.75rem !important;
+    }
+
+    .info-icon::before {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+
+    /* File table - FIX PRINCIPAL */
+    #file-list-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .file-list-table {
+        min-width: 500px;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .file-list-table .text-blue-400,
+    .file-list-table .text-red-400 {
+        display: inline-block;
+        margin: 0.2rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.25rem;
+        font-size: 0.8rem;
+        text-decoration: none !important;
+    }
+
+    .file-list-table .text-blue-400 {
+        background-color: #3b82f6;
+        color: white !important;
+    }
+
+    .file-list-table .text-red-400 {
+        background-color: #ef4444;
+        color: white !important;
+    }
+
+    /* Upload form */
+    #uploadForm {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem;
+    }
+
+    #uploadForm label,
+    #uploadForm button[type="submit"] {
+        width: 100% !important;
+        text-align: center;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+    }
+
+    #fileNameDisplay {
+        text-align: center;
+        width: 100%;
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 0.25rem;
+        margin: 0.5rem 0;
+    }
+
+    /* SPA Config responsive */
+    .spa-config-card input[type="number"], 
+    .spa-config-card input[type="text"], 
+    .spa-config-card select,
+    .spa-config-card input[type="datetime-local"] {
+        padding: 0.5rem;
+    }
+
+    .spa-config-card .command-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Control elements */
+    .control-btn {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .control-btn .text-4xl {
+        font-size: 2rem;
+    }
+
+    .control-btn .text-lg {
+        font-size: 1rem;
+    }
+
+    .temp-control .temp-value {
+        font-size: 2rem;
+    }
+
+    .temp-control button {
+        width: 120px;
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .lcd-screen .temp-main {
+        font-size: 10rem;
+    }
+
+    .mqtt-config-card .form-row {
+        margin-bottom: 0.75rem;
+    }
+}
