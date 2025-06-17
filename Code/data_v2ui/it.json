@@ -17,6 +17,12 @@
   "Italiano": "Italiano",
   "Deutsch": "Tedesco",
   
+  "Connected (HTTP)": "Connesso (HTTP)",
+  "Connected (WebSocket)": "Connesso", 
+  "Connected (Ext)": "Connesso (Ext)",
+  "Connected (WebSocket externe)": "Connesso (Ext)",
+  "HTTP Mode Indicator": "non tempo reale",
+  
   "CURRENT STATUS": "STATO ATTUALE",
   "Virtual:": "Virtuale :",
   "Estimated temperature, calculated from pump and environment data.": "Temperatura stimata, calcolata dai dati della pompa e dell'ambiente.",
@@ -236,7 +242,7 @@
   "No files found.": "Nessun file trovato.",
   "Download": "Scarica",
   
-  "© 2025 Lay-Z-Spa Control. All rights reserved.": "© 2025 - Lay-Z-Spa Module di visualapproach / UI di Dodemodexter",
+  "© 2025 - Lay-Z-Spa Module by visualapproach / Ui by Dodemodexter": "© 2025 - Lay-Z-Spa Module di visualapproach / UI di Dodemodexter",
   
   "Error": "Errore",
   "Success": "Successo",

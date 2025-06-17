@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Jersey+10:wght@400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="main_new.css">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
        
 </head>
 <body class="overflow-x-hidden">
@@ -38,7 +40,15 @@
             </div>
             
             <div class="flex items-center space-x-3">
-                <!-- Restart ESP Button -->			
+		
+				
+
+                <!-- Connection Status -->
+                <div class="flex items-center space-x-2">
+                    <div id="status-indicator" class="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <span id="status-text" class="text-sm text-gray-300" data-i18n="Connecting...">Connecting...</span>
+                </div>
+				                <!-- Restart ESP Button -->			
 <button id="restart-esp-btn" class="restart-button flex items-center space-x-2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded-md transition-all duration-200 shadow-sm hover:shadow-md" onclick="promptRestartESP()">
     <div class="power-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -48,23 +58,17 @@
     </div>
     <span class="hidden sm:inline font-medium" data-i18n="Restart ESP">Restart ESP</span>
 </button>
-				
-				
-
-                <!-- Connection Status -->
-                <div class="flex items-center space-x-2">
-                    <div id="status-indicator" class="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <span id="status-text" class="text-sm text-gray-300" data-i18n="Connecting...">Connecting...</span>
-                </div>
             </div>
         </div>
     </div>
 </header>
 
     <!-- Main Navigation -->
-    <nav class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex space-x-1 py-4 overflow-x-auto">
+<nav class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <!-- Tabs à gauche -->
+            <div class="flex space-x-1 overflow-x-auto">
                 <div class="nav-tab active" onclick="switchTab('spa-control', this)">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-text ml-2" data-i18n="SPA Control">SPA Control</span>
@@ -85,21 +89,23 @@
                     <span class="nav-icon">📁</span>
                     <span class="nav-text ml-2" data-i18n="Files">Files</span>
                 </div>
-                <div class="flex items-center">
-                    <label for="language-selector" class="sr-only" data-i18n="Language:">Language:</label>
-                    <select id="language-selector" class="px-3 py-1.5 text-sm bg-gray-700 text-gray-100 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="en" data-i18n="English">English</option>
-                        <option value="fr" data-i18n="Français">Français</option>
-                        <option value="es" data-i18n="Español">Español</option>
-                        <option value="pt" data-i18n="Português">Português</option>
-                        <option value="it" data-i18n="Italiano">Italiano</option>
-                        <option value="de" data-i18n="Deutsch">Deutsch</option>
-                    </select>
-                </div>
             </div>
-
+            
+            <!-- Sélecteur de langue à droite -->
+            <div class="flex items-center ml-4">
+                <label for="language-selector" class="sr-only" data-i18n="Language:">Language:</label>
+                <select id="language-selector" class="px-3 py-1.5 text-sm bg-gray-700 text-gray-100 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="en" data-i18n="English">English</option>
+                    <option value="fr" data-i18n="Français">Français</option>
+                    <option value="es" data-i18n="Español">Español</option>
+                    <option value="pt" data-i18n="Português">Português</option>
+                    <option value="it" data-i18n="Italiano">Italiano</option>
+                    <option value="de" data-i18n="Deutsch">Deutsch</option>
+                </select>
+            </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="main-content">
@@ -892,7 +898,7 @@
     <!-- Footer -->
     <footer class="bg-gray-900/50 backdrop-blur-sm border-t border-gray-700 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="text-center text-sm text-gray-400" id="footer-info" data-i18n="© 2025 Lay-Z-Spa Control. All rights reserved.">
+            <div class="text-center text-sm text-gray-400" id="footer-info" data-i18n="© 2025 - Lay-Z-Spa Module by visualapproach / Ui by Dodemodexter">
                 © 2025 - Lay-Z-Spa Module by visualapproach / Ui by Dodemodexter
 
             </div>

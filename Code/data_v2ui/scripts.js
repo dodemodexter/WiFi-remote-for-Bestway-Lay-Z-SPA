@@ -31,6 +31,14 @@
         const cmdMapReverse = Object.fromEntries(
             Object.entries(cmdMap).map(([key, value]) => [value, key])
         );
+let tempChangeTimeout = null;
+const DEBOUNCE_DELAY = 500;
+
+// Variables pour gestion local/externe
+let isLocalConnection = false;
+let pollingInterval = null;
+let lastPollingTime = 0;
+const POLLING_INTERVAL_MS = 2000;
 
         let connection;
         let currentTab = 'spa-control'; 
@@ -152,8 +160,8 @@
             'mqtt-config-section': false
         };
 
-        let tempChangeTimeout = null;
-        const DEBOUNCE_DELAY = 500;
+
+
 
         function markHardwareSectionModified(sectionId) {
             modifiedSections[sectionId] = true;
@@ -311,11 +319,11 @@
             }, 300); 
         }
 
-        function getEspBaseUrl() {
-            const hostname = location.hostname;
-            const port = '80';
-            return `${location.protocol}//${hostname}:${port}`;
-        }
+function getEspBaseUrl() {
+    const hostname = location.hostname;
+    const port = location.port || '80';
+    return `${location.protocol}//${hostname}:${port}`;
+}
 
         window.sendCommand = function(cmd) {
             if (typeof cmdMap[cmd] == "undefined") {
@@ -426,10 +434,13 @@ var obj = {
 };
 
 if (connection && connection.readyState === WebSocket.OPEN) {
-    //console.log(`📤 Envoi commande: ${cmd}`, obj); // ← AJOUTEZ CETTE LIGNE ICI
+    //console.log(`📤 Envoi commande WebSocket: ${cmd}`, obj);
     connection.send(JSON.stringify(obj));
+} else if (!isLocalConnection) {
+    //console.log(`📤 Envoi commande HTTP: ${cmd}`, obj);
+    sendCommandHTTP(obj);
 } else {
-    showModal(i18n('Connection Error'), i18n('WebSocket is not connected. Please ensure the ESP is online and connected.'), null, null);
+    showModal(i18n('Connection Error'), i18n('Unable to send command. Please ensure the ESP is online and connected.'), null, null);
 }
         };
 
@@ -555,96 +566,88 @@ function updateTime() {
         const RECONNECT_INTERVAL = 5000;
 
 function connect() {
-    try {
-        const wsUrl = `ws://${location.hostname}:81/`;
-        const wsProtocol = "arduino";
-
-        connection = new WebSocket(wsUrl, [wsProtocol]);
+    const port = location.port;
+    
+    if (port && port !== '80' && port !== '443') {
+        //console.log("🌐 Port externe détecté (" + port + ") - Test WebSocket externe");
         
-        connection.onopen = function() {
-            const statusIndicator = document.getElementById('status-indicator');
-            const statusText = document.getElementById('status-text');
-            if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-green-500 rounded-full animate-pulse';
-            if (statusText) {
-                statusText.textContent = i18n('Connected');
-                statusText.setAttribute('data-i18n', 'Connected');
-            }
-            // Reset manual restart flag on successful connection
-            isManualRestart = false; 
-            hideModal(); // Hide modal if it was showing "Restarting..."
-            reconnectAttempts = 0;
-            connection.send(JSON.stringify({ "CMD": "GET_STATES" })); 
-            connection.send(JSON.stringify({ "CMD": "GET_HARDWARE_CONFIG" })); 
-            connection.send(JSON.stringify({ "CMD": "GET_SPA_CONFIG" }));
-            loadCommandQueueViaHttp(); 
-        };
+        // Calculer le port WebSocket externe (port HTTP + 1)
+        const wsPort = parseInt(port) + 1;
+        const wsUrl = `ws://${location.hostname}:${wsPort}/`;
+        
+        //console.log("🔌 Tentative WebSocket externe:", wsUrl);
+        
+        // Essayer WebSocket externe d'abord
+        tryExternalWebSocket(wsUrl);
+    } else {
+       // console.log("🏠 Connexion locale - Mode WebSocket standard");
+        isLocalConnection = true;
+        connectWebSocket();
+    }
+}
 
+function tryExternalWebSocket(wsUrl) {
+    try {
+        connection = new WebSocket(wsUrl, ["arduino"]);
+        
+        // Timeout pour éviter d'attendre trop longtemps
+        const timeout = setTimeout(() => {
+           // console.log("⏱️ Timeout WebSocket externe, basculement HTTP");
+            connection.close();
+            connectHttpPolling();
+        }, 3000);
+        
+connection.onopen = function() {
+    clearTimeout(timeout);
+    //console.log("🎉 WebSocket externe connecté !");
+    isLocalConnection = false; // Externe mais avec WebSocket
+    
+    const statusIndicator = document.getElementById('status-indicator');
+    const statusText = document.getElementById('status-text');
+    if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-green-500 rounded-full animate-pulse';
+    if (statusText) {
+        statusText.textContent = i18n('Connected (Ext)');
+        statusText.setAttribute('data-i18n', 'Connected (Ext)');
+    }
+    
+    // Corrections pour l'état de connexion
+    isManualRestart = false; 
+    hideModal(); // Fermer toute modal de connexion
+    reconnectAttempts = 0;
+    
+    // Récupération des données
+    connection.send(JSON.stringify({ "CMD": "GET_STATES" })); 
+    connection.send(JSON.stringify({ "CMD": "GET_HARDWARE_CONFIG" })); 
+    connection.send(JSON.stringify({ "CMD": "GET_SPA_CONFIG" }));
+    loadCommandQueueViaHttp();
+};
+        
         connection.onerror = function(error) {
-            console.error(i18n("WebSocket Error:"), error);
-            const statusIndicator = document.getElementById('status-indicator');
-            const statusText = document.getElementById('status-text');
-            if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-red-500 rounded-full';
-            if (statusText) {
-                statusText.textContent = i18n('Error');
-                statusText.setAttribute('data-i18n', 'Error');
-            }
+            clearTimeout(timeout);
+            //console.log("❌ WebSocket externe échoué:", error);
+            //console.log("🔄 Basculement vers mode HTTP");
+            connectHttpPolling();
         };
-
+        
         connection.onclose = function(event) {
-            const statusIndicator = document.getElementById('status-indicator');
-            const statusText = document.getElementById('status-text');
-
-            reconnectAttempts++;
-            if (reconnectAttempts <= MAX_RECONNECT_ATTEMPTS) {
-                if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-yellow-500 rounded-full';
-                
-                // Display "Restarting..." only if it's a manual restart
-                if (isManualRestart) {
-                    if (statusText) {
-                        statusText.textContent = i18n('Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS });
-                        statusText.setAttribute('data-i18n', 'Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...');
-                    }
-                    showModal(i18n('Restarting...'), i18n('The ESP is restarting. Connection may be temporarily lost. Please wait while we attempt to reconnect... Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS }), null, null, false, "OK", true);
-                } else {
-                    if (statusText) {
-                        statusText.textContent = i18n('Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS });
-                        statusText.setAttribute('data-i18n', 'Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...');
-                    }
-                    // For non-manual disconnects, just show reconnection attempts, not "Restarting..."
-                    showModal(i18n('Connection Lost'), i18n('Connection lost. Attempting to reconnect ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS }), null, null, false, "OK", true);
-                }
-                
-                setTimeout(connect, RECONNECT_INTERVAL);
-            } else {
-                if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-gray-500 rounded-full';
-                if (statusText) {
-                    statusText.textContent = i18n('Disconnected');
-                    statusText.setAttribute('data-i18n', 'Disconnected');
-                }
-                // For persistent disconnections, hide any "reconnecting" modal and show final message
-                hideModal();
-                showModal(i18n('Connection Lost'), i18n('Unable to reconnect to ESP after multiple attempts. Please check ESP power and your network.'), null, null);
-                isManualRestart = false; // Reset the flag if it was a manual restart but failed to reconnect
-            }
+            clearTimeout(timeout);
+           // console.log("🔌 WebSocket externe fermé, basculement HTTP");
+            connectHttpPolling();
         };
-
+        
         connection.onmessage = function(e) {
             try {
                 const data = JSON.parse(e.data);
                 handleMessage(data);
             } catch (error) {
-                console.error(i18n("Error parsing JSON for received message:"), error);
+                console.error("Error parsing WebSocket message:", error);
             }
         };
+        
     } catch (error) {
-        console.error(i18n("Error initializing WebSocket connection:"), error);
-        const statusIndicator = document.getElementById('status-indicator');
-        const statusText = document.getElementById('status-text');
-        if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-red-500 rounded-full';
-        if (statusText) {
-            statusText.textContent = i18n('Connection Failed');
-            statusText.setAttribute('data-i18n', 'Connection Failed');
-        }
+        //console.log("❌ WebSocket externe impossible:", error);
+       // console.log("🔄 Basculement vers mode HTTP");
+        connectHttpPolling();
     }
 }
 
@@ -720,12 +723,12 @@ function handleMessage(data) {
         // Mettre à jour l'affichage de maintenance
         updateMaintenanceDisplay();
         
-        <!-- console.log("🔧 Données maintenance mises à jour:", { -->
-            <!-- chlorine: currentData.MAINT_CHLORINE_DAYS_LEFT, -->
-            <!-- filterChange: currentData.MAINT_FILTER_CHANGE_DAYS_LEFT, -->
-            <!-- filterRinse: currentData.MAINT_FILTER_RINSE_DAYS_LEFT, -->
-            <!-- filterClean: currentData.MAINT_FILTER_CLEAN_DAYS_LEFT -->
-        <!-- }); -->
+       // console.log("🔧 Données maintenance mises à jour:", {
+       //     chlorine: currentData.MAINT_CHLORINE_DAYS_LEFT,
+       //     filterChange: currentData.MAINT_FILTER_CHANGE_DAYS_LEFT,
+       //     filterRinse: currentData.MAINT_FILTER_RINSE_DAYS_LEFT,
+       //     filterClean: currentData.MAINT_FILTER_CLEAN_DAYS_LEFT 
+        // });
         
     } else if (data.CONTENT === "OTHER") { 
         if (data.HASJETS !== undefined) {
@@ -2646,3 +2649,375 @@ function updateMaintenanceItem(prefix, lastTimestamp, daysLeft) {
             renderCommandQueue();
             updateMaintenanceDisplay();
         });
+		
+		function connectWebSocket() {
+    try {
+        const wsUrl = `ws://${location.hostname}:81/`;
+        const wsProtocol = "arduino";
+
+        connection = new WebSocket(wsUrl, [wsProtocol]);
+        
+        connection.onopen = function() {
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-green-500 rounded-full animate-pulse';
+            if (statusText) {
+                statusText.textContent = i18n('Connected');
+                statusText.setAttribute('data-i18n', 'Connected');
+            }
+            isManualRestart = false; 
+            hideModal();
+            reconnectAttempts = 0;
+            connection.send(JSON.stringify({ "CMD": "GET_STATES" })); 
+            connection.send(JSON.stringify({ "CMD": "GET_HARDWARE_CONFIG" })); 
+            connection.send(JSON.stringify({ "CMD": "GET_SPA_CONFIG" }));
+            loadCommandQueueViaHttp(); 
+        };
+
+        connection.onerror = function(error) {
+            console.error(i18n("WebSocket Error:"), error);
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-red-500 rounded-full';
+            if (statusText) {
+                statusText.textContent = i18n('Error');
+                statusText.setAttribute('data-i18n', 'Error');
+            }
+        };
+
+        connection.onclose = function(event) {
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+
+            reconnectAttempts++;
+            if (reconnectAttempts <= MAX_RECONNECT_ATTEMPTS) {
+                if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-yellow-500 rounded-full';
+                
+                if (isManualRestart) {
+                    if (statusText) {
+                        statusText.textContent = i18n('Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS });
+                        statusText.setAttribute('data-i18n', 'Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...');
+                    }
+                    showModal(i18n('Restarting...'), i18n('The ESP is restarting. Connection may be temporarily lost. Please wait while we attempt to reconnect... Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS }), null, null, false, "OK", true);
+                } else {
+                    if (statusText) {
+                        statusText.textContent = i18n('Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS });
+                        statusText.setAttribute('data-i18n', 'Reconnecting ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...');
+                    }
+                    showModal(i18n('Connection Lost'), i18n('Connection lost. Attempting to reconnect ({reconnectAttempts}/{MAX_RECONNECT_ATTEMPTS})...', { reconnectAttempts, MAX_RECONNECT_ATTEMPTS }), null, null, false, "OK", true);
+                }
+                
+                setTimeout(connectWebSocket, RECONNECT_INTERVAL);
+            } else {
+                if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-gray-500 rounded-full';
+                if (statusText) {
+                    statusText.textContent = i18n('Disconnected');
+                    statusText.setAttribute('data-i18n', 'Disconnected');
+                }
+                hideModal();
+                showModal(i18n('Connection Lost'), i18n('Unable to reconnect to ESP after multiple attempts. Please check ESP power and your network.'), null, null);
+                isManualRestart = false;
+            }
+        };
+
+        connection.onmessage = function(e) {
+            try {
+                const data = JSON.parse(e.data);
+                handleMessage(data);
+            } catch (error) {
+                console.error(i18n("Error parsing JSON for received message:"), error);
+            }
+        };
+    } catch (error) {
+        console.error(i18n("Error initializing WebSocket connection:"), error);
+        const statusIndicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-red-500 rounded-full';
+        if (statusText) {
+            statusText.textContent = i18n('Connection Failed');
+            statusText.setAttribute('data-i18n', 'Connection Failed');
+        }
+    }
+}
+
+function connectHttpPolling() {
+    const statusIndicator = document.getElementById('status-indicator');
+    const statusText = document.getElementById('status-text');
+    
+    if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-blue-500 rounded-full animate-pulse';
+    if (statusText) {
+        statusText.textContent = i18n('Connected (HTTP)');
+        statusText.setAttribute('data-i18n', 'Connected (HTTP)');
+    }
+    
+    console.log("🔄 Mode HTTP - Initialisation avec données par défaut");
+    
+    // Forcer l'affichage avec les données par défaut de currentData
+    updateInterface(currentData);
+    updateSpaControlPageButtons();
+    updateMaintenanceDisplay();
+    
+    // Ajouter un message informatif
+    showHttpModeInfo();
+    
+    // Charger les données de configuration (qui fonctionnent)
+    setTimeout(() => {
+        loadCommandQueueViaHttp();
+        loadHardwareConfig(); 
+        loadSpaConfig();
+        loadConnectivityConfig();
+    }, 1000);
+    
+    // Polling léger pour vérifier les commandes seulement
+    pollingInterval = setInterval(() => {
+        loadCommandQueueViaHttp();
+    }, 10000); // Toutes les 10 secondes
+}
+
+// Afficher un message informatif en mode HTTP
+function showHttpModeInfo() {
+    // Supprimer les anciens indicateurs
+    document.querySelectorAll('.http-notice').forEach(el => el.remove());
+    
+    // Pour l'affichage principal LCD
+    const lcdScreen = document.querySelector('.lcd-screen');
+    if (lcdScreen && !lcdScreen.querySelector('.http-notice')) {
+        const notice = document.createElement('div');
+        notice.className = 'http-notice';
+        notice.textContent = i18n('HTTP Mode Indicator') || '(Not Real Time)';
+        notice.style.fontSize = '0.6em';
+        notice.style.color = '#FF0020';
+        notice.style.position = 'absolute';
+notice.style.bottom = '3px';
+notice.style.left = '50%';
+notice.style.transform = 'translateX(-50%)';  // Centré horizontalement
+        lcdScreen.appendChild(notice);
+    }
+    
+    // Pour le virtuel (reste pareil)
+    const virtualTemp = document.querySelector('#temp-virtual');
+    if (virtualTemp && virtualTemp.parentNode && !virtualTemp.parentNode.querySelector('.http-notice')) {
+        const notice = document.createElement('span');
+        notice.className = 'http-notice';
+        notice.textContent = i18n('HTTP Mode Indicator') || '(~)';
+        notice.style.fontSize = '0.7em';
+        notice.style.color = '#888';
+		notice.style.bottom = '3px';
+notice.style.left = '50%';
+notice.style.transform = 'translateX(-50%)';  // Centré horizontalement
+        virtualTemp.parentNode.appendChild(notice);
+    }
+}
+
+// Fonction pour simuler une mise à jour après envoi de commande
+function simulateCommandResponse(cmd) {
+   // console.log(`🎭 Simulation réponse pour: ${cmd}`);
+    
+    // Simuler un délai de traitement
+    setTimeout(() => {
+        // Actualiser l'affichage avec les nouvelles valeurs de currentData
+        updateInterface(currentData);
+        updateSpaControlPageButtons();
+        
+        // Vérifier si la commande a bien été ajoutée à la queue
+        setTimeout(() => {
+            loadCommandQueueViaHttp();
+        }, 1000);
+    }, 500);
+}
+
+// Charger toutes les données une fois
+function loadAllDataHTTP() {
+    //console.log("📡 Chargement initial de toutes les données...");
+    
+    // Données d'état du spa
+    loadSpaStatesHTTP();
+    
+    // Données de maintenance/timing
+    loadMaintenanceTimesHTTP();
+    
+    // Données de configuration (déjà fonctionnelles)
+    setTimeout(() => {
+        loadCommandQueueViaHttp();
+        loadHardwareConfig(); 
+        loadSpaConfig();
+        loadConnectivityConfig();
+    }, 1000);
+}
+
+// Récupérer les données d'état du spa
+function loadSpaStatesHTTP() {
+    const baseUrl = getEspBaseUrl();
+    const req = new XMLHttpRequest();
+    
+    req.open('POST', `${baseUrl}/getstates/`, true);
+    req.timeout = 3000; // Timeout de 3 secondes
+    
+    req.onload = function() {
+        if (req.status === 200) {
+            try {
+                const data = JSON.parse(req.responseText);
+                //console.log("📊 Données d'état reçues:", data);
+                
+                // Traiter les données comme si elles venaient du WebSocket
+                handleMessage({ CONTENT: "STATES", ...data });
+            } catch (e) {
+                console.error("❌ Erreur parsing données d'état:", e);
+            }
+        } else {
+            console.warn("⚠️ Erreur récupération états:", req.status);
+        }
+    };
+    
+    req.onerror = function() {
+        console.warn("⚠️ Erreur réseau pour /getstates/");
+    };
+    
+    req.ontimeout = function() {
+        console.warn("⏱️ Timeout pour /getstates/");
+    };
+    
+    req.send();
+}
+
+// Récupérer les données de maintenance
+function loadMaintenanceTimesHTTP() {
+    const baseUrl = getEspBaseUrl();
+    const req = new XMLHttpRequest();
+    
+    req.open('POST', `${baseUrl}/gettimes/`, true);
+    req.timeout = 3000;
+    
+    req.onload = function() {
+        if (req.status === 200) {
+            try {
+                const data = JSON.parse(req.responseText);
+                //console.log("🕒 Données timing reçues:", data);
+                
+                // Traiter les données comme si elles venaient du WebSocket
+                handleMessage({ CONTENT: "TIMES", ...data });
+            } catch (e) {
+                console.error("❌ Erreur parsing données timing:", e);
+            }
+        } else {
+            console.warn("⚠️ Erreur récupération timing:", req.status);
+        }
+    };
+    
+    req.onerror = function() {
+        console.warn("⚠️ Erreur réseau pour /gettimes/");
+    };
+    
+    req.ontimeout = function() {
+        console.warn("⏱️ Timeout pour /gettimes/");
+    };
+    
+    req.send();
+}
+
+// Nouvelle fonction pour récupérer les états du spa via HTTP
+function fetchSpaStatesHTTP() {
+    // Essayer de récupérer les données depuis différents endpoints
+    
+    // 1. Essayer l'endpoint principal (si il existe)
+    const baseUrl = getEspBaseUrl();
+    
+    // Créer des données simulées basées sur l'état actuel
+    // En mode HTTP, on ne peut pas avoir les vraies données temps réel
+    // mais on peut au moins maintenir l'interface fonctionnelle
+    
+    const now = Date.now();
+    if (now - lastPollingTime < POLLING_INTERVAL_MS - 100) {
+        return; // Éviter les appels trop fréquents
+    }
+    lastPollingTime = now;
+    
+    // Pour les commandes, on peut vérifier si elles ont été exécutées
+    loadCommandQueueViaHttp();
+    
+    //console.log("🔄 Polling HTTP - Vérification des commandes");
+}
+
+// Fonction pour arrêter le polling HTTP
+function stopHttpPolling() {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+      //  console.log("🛑 Polling HTTP arrêté");
+    }
+}
+
+function sendCommandHTTP(commandObj) {
+    const baseUrl = getEspBaseUrl();
+    const req = new XMLHttpRequest();
+    req.open('POST', `${baseUrl}/addcommand/`);
+    req.setRequestHeader('Content-Type', 'application/json');
+    
+    req.onload = function() {
+        if (req.status === 200) {
+           // console.log("✅ Commande HTTP envoyée avec succès");
+        } else {
+            console.error("❌ Erreur envoi commande HTTP:", req.status);
+        }
+    };
+    
+    req.onerror = function() {
+        console.warn("⚠️ Erreur réseau lors de l'envoi de commande HTTP");
+    };
+    
+    req.send(JSON.stringify(commandObj));
+}
+
+function showHttpModeNotice() {
+    // Afficher un message informatif en mode HTTP
+    const statusText = document.getElementById('status-text');
+    if (statusText) {
+        statusText.title = "Mode HTTP : Commandes disponibles, données temps réel limitées";
+    }
+    
+    // Vous pouvez masquer ou griser certains éléments qui nécessitent des données temps réel
+    const tempElements = document.querySelectorAll('#temp-actual, #temp-virtual');
+    tempElements.forEach(el => {
+        if (el) el.style.opacity = '0.5';
+    });
+}
+// Fonction pour tester quels endpoints existent
+async function debugAvailableEndpoints() {
+    const baseUrl = getEspBaseUrl();
+    const endpoints = [
+        '/getstates/',
+        '/gettimes/', 
+        '/getdata/',
+        '/status/',
+        '/states/',
+        '/times/',
+        '/current/',
+        '/live/'
+    ];
+    
+    console.log("🔍 Test des endpoints disponibles...");
+    
+    for (const endpoint of endpoints) {
+        try {
+            const response = await fetch(`${baseUrl}${endpoint}`, {
+                method: 'POST',
+                timeout: 2000
+            });
+            
+            if (response.ok) {
+                const data = await response.text();
+               // console.log(`✅ ${endpoint} : OK`, data.substring(0, 100));
+            } else {
+               // console.log(`❌ ${endpoint} : ${response.status}`);
+            }
+        } catch (e) {
+           // console.log(`❌ ${endpoint} : Erreur`, e.message);
+        }
+        
+        // Petite pause entre les tests
+        await new Promise(resolve => setTimeout(resolve, 200));
+    }
+}
+
+// Lancez cette fonction pour voir quels endpoints sont disponibles
+// debugAvailableEndpoints();
