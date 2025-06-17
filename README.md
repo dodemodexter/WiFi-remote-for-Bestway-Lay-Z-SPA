@@ -17,6 +17,23 @@
 
 ⚠ **Note:** Slightly heavier than original version — not recommended on low-memory ESP.
 
+### 📥 Installation Instructions
+
+**To install the Modern UI (v2):**
+
+1. **Download** all files from `/Code/data_v2ui/` folder
+2. **Access** your ESP's file manager at `http://YOUR-ESP-IP/upload.html`
+3. **Upload** all the v2ui files to your ESP:
+   - `index.html` (will replace the existing one)
+   - All translation files (`fr.json`, `es.json`, etc.)
+   - All other configuration and asset files
+4. **Reboot** your ESP module
+5. **Access** the new interface at `http://YOUR-ESP-IP`
+
+⚠️ **Important:** This will **replace** your current `index.html` file. Make sure to backup your current interface if needed.
+
+✅ **Compatible** with existing firmware - no reflashing required!
+
 # 🌐 External WebSocket - Remote Connection
 
 ## ✨ New Feature: External WebSocket Connection
