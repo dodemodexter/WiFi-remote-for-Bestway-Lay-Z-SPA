@@ -5,11 +5,12 @@
 ### 🔵 Modern UI (v2 - Full Redesign)
 Location: `/Code/data_v2ui/`  
 Maintained by @dodemodexter  
-✔ Full multilingual support (EN, FR, DE, IT, ES, PT)  
-✔ Responsive design  
-✔ UI theming / clarity  
-✔ .json-based configuration  
-✔ Compatible with original firmware
+   ✔ Full multilingual support (EN, FR, DE, IT, ES, PT)  
+   ✔ Responsive design  
+   ✔ UI theming / clarity  
+   ✔ .json-based configuration  
+   ✔ Compatible with original firmware
+   ✔ External WebSocket - Remote Connection
 ⚠ Slightly heavier than original version — not recommended on low-memory ESP.
 
 # 🌐 External WebSocket - Remote Connection
