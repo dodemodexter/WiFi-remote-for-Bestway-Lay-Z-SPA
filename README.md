@@ -17,6 +17,10 @@
 
 ⚠ **Note:** Slightly heavier than original version — not recommended on low-memory ESP.
 
+## Android App (APK)
+
+An Android app is available to simplify access without modifying the native files of the SPA : [Download the APK (https://github.com/dodemodexter/WiFi-remote-for-Bestway-Lay-Z-SPA/blob/master/Code/APK/Lay-Z-VisualA-Dodemodexter.apk)]
+
 ### 📥 Installation Instructions
 
 **To install the Modern UI (v2):**
