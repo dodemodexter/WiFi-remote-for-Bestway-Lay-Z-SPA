@@ -19,7 +19,7 @@
 
 ## Android App (APK)
 
-An Android app is available to simplify access without modifying the native files of the SPA : Download the APK -> (https://github.com/dodemodexter/WiFi-remote-for-Bestway-Lay-Z-SPA/blob/master/Code/APK/Lay-Z-VisualA-Dodemodexter.apk)]
+An Android App of this UI is available to simplify access without modifying the native files of the SPA : [Download the APK](https://github.com/dodemodexter/WiFi-remote-for-Bestway-Lay-Z-SPA/blob/master/Code/APK/Lay-Z-VisualA-Dodemodexter.apk)
 
 ### 📥 Installation Instructions
 
