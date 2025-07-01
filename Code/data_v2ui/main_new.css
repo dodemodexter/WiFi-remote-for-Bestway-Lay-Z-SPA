@@ -14,6 +14,10 @@ body {
     height: 60px !important;
 }
 
+
+
+
+
 /* ========================================= */
 /* NAVIGATION */
 /* ========================================= */
@@ -317,6 +321,8 @@ input[type="range"]::-moz-range-thumb {
 .btn-bubbles.inactive { background-color: #374151; }
 .btn-hydrojets.active { background-color: #10b981; }
 .btn-hydrojets.inactive { background-color: #374151; }
+.btn-godmode.active {background-color: #10b981;}
+.btn-godmode.inactive {background-color: #374151;}
 
 .brightness-control {
     background-color: #1a202c;

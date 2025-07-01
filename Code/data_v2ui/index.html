@@ -200,6 +200,13 @@
                         <div class="text-lg font-semibold" data-i18n="Hydrojets">Hydrojets</div>
                         <div class="text-sm mt-1" id="hydrojets-action" data-i18n="Off">Off</div>
                     </div>
+<!-- Take Control Button -->
+<div class="control-btn btn-godmode inactive" id="GOD" onclick="toggleCommand('toggleGodmode')">
+    <div class="text-4xl mb-2">🔓</div>
+    <div class="text-lg font-semibold" data-i18n="GodMode">God Mode</div>
+    <div class="text-sm mt-1" id="godmode-action" data-i18n="Inactive">Inactif</div>
+</div>
+
 
                 </div>
 
@@ -546,6 +553,12 @@
                         <input type="checkbox" id="btn-timer" checked class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
                         <label for="btn-timer" class="text-gray-200" data-i18n="Timer">Timer</label>
                     </div>
+					
+					<div class="flex items-center" id="checkbox-godmode-container">
+                        <input type="checkbox" id="btn-godmode" checked="" class="mr-2" onchange="markSpaSectionModified('display-button-config-section')">
+                        <label for="btn-godmode" class="text-gray-200" data-i18n="GodMode">God Mode</label>
+                    </div>
+					
                 </div>
 
                 <!-- Visual representation of buttons -->
@@ -589,6 +602,11 @@
                     <button class="display-button-visual" id="visual-btn-timer">
                         <span class="icon">⏱️</span>
                         <span data-i18n="Timer">Timer</span>
+                    </button>
+					
+					<button class="display-button-visual active-color" id="visual-btn-godmode">
+                        <span class="icon">🔓</span>
+                        <span data-i18n="GodMode">God Mode</span>
                     </button>
                 </div>
 

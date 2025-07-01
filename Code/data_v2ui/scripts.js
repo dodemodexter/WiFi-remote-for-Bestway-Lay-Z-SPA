@@ -108,7 +108,8 @@ const POLLING_INTERVAL_MS = 2000;
             HJT: false,
             LCK_btn: true,
             UNT: true,
-            TMR: true
+            TMR: true,
+			GOD: true
         };
 
         let networkConfigData = {
@@ -344,6 +345,7 @@ function getEspBaseUrl() {
                 case "toggleLock": isButtonEnabledByConfig = _spaConfigData.LCK_btn; break; 
                 case "toggleUnit": isButtonEnabledByConfig = _spaConfigData.UNT; break;
                 case "toggleTimer": isButtonEnabledByConfig = _spaConfigData.TMR; break;
+				case "toggleGodmode": isButtonEnabledByConfig = _spaConfigData.GOD; break;
             }
 
             const isMasterEnabled = _spaConfigData.LCK;
@@ -389,6 +391,10 @@ function getEspBaseUrl() {
                         value = currentData.TMR === 1 ? 0 : 1;
                         currentData.TMR = value;
                         break;
+				    case "toggleGodmode":
+                        value = currentData.GOD === 1 ? 0 : 1;
+                        currentData.GOD = value;
+                        break;	
                 }
                 updateInterface(currentData);
                 updateSpaControlPageButtons();
@@ -434,10 +440,10 @@ var obj = {
 };
 
 if (connection && connection.readyState === WebSocket.OPEN) {
-    //console.log(`📤 Envoi commande WebSocket: ${cmd}`, obj);
+    console.log(`📤 Envoi commande WebSocket: ${cmd}`, obj);
     connection.send(JSON.stringify(obj));
 } else if (!isLocalConnection) {
-    //console.log(`📤 Envoi commande HTTP: ${cmd}`, obj);
+    console.log(`📤 Envoi commande HTTP: ${cmd}`, obj);
     sendCommandHTTP(obj);
 } else {
     showModal(i18n('Connection Error'), i18n('Unable to send command. Please ensure the ESP is online and connected.'), null, null);
@@ -753,13 +759,13 @@ function handleMessage(data) {
             AUDIO: false, NOTIFY: true, NOTIFTIME: 32, RESTORE: false, 
             VTCAL: true, LCK: true, 
             AIR: true, FLT: true, HTR: true, DN: true, UP: true, PWR: true, HJT: false, 
-            LCK_btn: true, UNT: true, TMR: true
+            LCK_btn: true, UNT: true, TMR: true, GOD: true
         };
         const incomingSpaConfig = {};
         for (const key in data) {
             if (data.hasOwnProperty(key)) {
                 const value = data[key];
-                if (['AUDIO', 'NOTIFY', 'RESTORE', 'VTCAL', 'LCK', 'AIR', 'FLT', 'HTR', 'DN', 'UP', 'PWR', 'HJT', 'LCK_btn', 'UNT', 'TMR'].includes(key)) {
+                if (['AUDIO', 'NOTIFY', 'RESTORE', 'VTCAL', 'LCK', 'AIR', 'FLT', 'HTR', 'DN', 'UP', 'PWR', 'HJT', 'LCK_btn', 'UNT', 'TMR', 'GOD'].includes(key)) {
                     incomingSpaConfig[key] = (value === 1 || value === true || value === "1");
                 } else {
                     incomingSpaConfig[key] = value;
@@ -1367,12 +1373,12 @@ function handleMessage(data) {
                             AUDIO: false, NOTIFY: true, NOTIFTIME: 32, RESTORE: false, 
                             VTCAL: true, LCK: true, 
                             AIR: true, FLT: true, HTR: true, DN: true, UP: true, PWR: true, HJT: false, 
-                            LCK_btn: true, UNT: true, TMR: true
+                            LCK_btn: true, UNT: true, TMR: true, GOD: true
                         };
                         Object.assign(_spaConfigData, defaults); 
                         for (const key in json) {
                             if (json.hasOwnProperty(key) && json[key] !== undefined) {
-                                if (['AUDIO', 'NOTIFY', 'RESTORE', 'VTCAL', 'LCK', 'AIR', 'FLT', 'HTR', 'DN', 'UP', 'PWR', 'HJT', 'LCK_btn', 'UNT', 'TMR'].includes(key)) {
+                                if (['AUDIO', 'NOTIFY', 'RESTORE', 'VTCAL', 'LCK', 'AIR', 'FLT', 'HTR', 'DN', 'UP', 'PWR', 'HJT', 'LCK_btn', 'UNT', 'TMR', 'GOD'].includes(key)) {
                                     _spaConfigData[key] = (json[key] === 1 || json[key] === true || json[key] === "1");
                                 } else {
                                     _spaConfigData[key] = json[key];
@@ -1440,122 +1446,141 @@ function handleMessage(data) {
             });
         }
 
-        function saveSpaConfigSection() {
-            _spaConfigData.PRICE = parseFloat(document.getElementById('kwh-price').value);
-            _spaConfigData.CLINT = parseInt(document.getElementById('chlorine-days').value);
-            _spaConfigData.FREPI = parseInt(document.getElementById('filter-change-days').value);
-            _spaConfigData.FRINI = parseInt(document.getElementById('filter-rinse-days').value);
-            _spaConfigData.FCLEI = parseInt(document.getElementById('filter-clean-days').value);
-            _spaConfigData.AUDIO = document.getElementById('enable-sounds').checked;
-            _spaConfigData.NOTIFY = document.getElementById('enable-notifications').checked; 
-            _spaConfigData.NOTIFTIME = parseInt(document.getElementById('notification-volume').value);
-            _spaConfigData.VTCAL = document.getElementById('calibrated-checkbox').checked; 
-            _spaConfigData.LCK = document.getElementById('activate-display-buttons').checked; 
+function saveSpaConfigSection() {
+    _spaConfigData.PRICE = parseFloat(document.getElementById('kwh-price').value);
+    _spaConfigData.CLINT = parseInt(document.getElementById('chlorine-days').value);
+    _spaConfigData.FREPI = parseInt(document.getElementById('filter-change-days').value);
+    _spaConfigData.FRINI = parseInt(document.getElementById('filter-rinse-days').value);
+    _spaConfigData.FCLEI = parseInt(document.getElementById('filter-clean-days').value);
+    _spaConfigData.AUDIO = document.getElementById('enable-sounds').checked;
+    _spaConfigData.NOTIFY = document.getElementById('enable-notifications').checked;
+    _spaConfigData.NOTIFTIME = parseInt(document.getElementById('notification-volume').value);
+    _spaConfigData.VTCAL = document.getElementById('calibrated-checkbox').checked;
+    _spaConfigData.LCK = document.getElementById('activate-display-buttons').checked;
 
-            _spaConfigData.AIR = document.getElementById('btn-bubbles').checked;
-            _spaConfigData.FLT = document.getElementById('btn-filter').checked;
-            _spaConfigData.HTR = document.getElementById('btn-heating').checked;
-            _spaConfigData.DN = document.getElementById('btn-temp-minus').checked;
-            _spaConfigData.UP = document.getElementById('btn-temp-plus').checked;
-            _spaConfigData.PWR = document.getElementById('btn-power').checked;
-            _spaConfigData.HJT = document.getElementById('btn-jets').checked;
-            _spaConfigData.LCK_btn = document.getElementById('btn-lock').checked; 
-            _spaConfigData.UNT = document.getElementById('btn-unit').checked;
-            _spaConfigData.TMR = document.getElementById('btn-timer').checked;
+    // Assurez-vous que ces lignes sont bien là et lient les checkboxes aux clés de _spaConfigData
+    _spaConfigData.AIR = document.getElementById('btn-bubbles').checked;
+    _spaConfigData.FLT = document.getElementById('btn-filter').checked; // Assurez-vous que l'ID est correct si ce n'est pas 'btn-pump'
+    _spaConfigData.HTR = document.getElementById('btn-heating').checked;
+    _spaConfigData.DN = document.getElementById('btn-temp-minus').checked;
+    _spaConfigData.UP = document.getElementById('btn-temp-plus').checked;
+    _spaConfigData.PWR = document.getElementById('btn-power').checked;
+    _spaConfigData.HJT = document.getElementById('btn-jets').checked; // Assurez-vous que l'ID est correct si ce n'est pas 'btn-hydrojets'
+    _spaConfigData.LCK_btn = document.getElementById('btn-lock').checked;
+    _spaConfigData.UNT = document.getElementById('btn-unit').checked;
+    _spaConfigData.TMR = document.getElementById('btn-timer').checked;
+    _spaConfigData.GOD = document.getElementById('btn-godmode').checked; // <-- LIGNE AJOUTÉE ET CORRIGÉE
 
-            const saveButton = event.target;
-            buttonConfirm(saveButton, i18n("Saving..."), 6);
+    const saveButton = event.target;
+    buttonConfirm(saveButton, i18n("Saving..."), 6);
 
-            var req = new XMLHttpRequest();
-            const baseUrl = getEspBaseUrl();
-            req.open('POST', `${baseUrl}/setconfig/`); 
-            req.setRequestHeader('Content-Type', 'application/json');
-            req.send(JSON.stringify(_spaConfigData)); 
+    var req = new XMLHttpRequest();
+    const baseUrl = getEspBaseUrl();
+    req.open('POST', `${baseUrl}/setconfig/`);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.send(JSON.stringify(_spaConfigData));
 
-            req.onload = function() {
-                if (req.status === 200) {
-                    buttonConfirm(saveButton, i18n("Saved &check;"), 3, true);
-                    loadSpaConfig();
-                } else {
-                    console.error(i18n("Failed to save SPA config. Status:"), req.status);
-                    buttonConfirm(saveButton, i18n("Save Failed!"), 3, true);
-                }
-            };
-            req.onerror = function() {
-                console.error(i18n("XMLHttpRequest error during saveSpaConfig. Check network/ESP response."));
-                buttonConfirm(saveButton, i18n("Failed (Network Error)"), 3, true);
-            };
+    req.onload = function() {
+        if (req.status === 200) {
+            buttonConfirm(saveButton, i18n("Saved &check;"), 3, true);
+            loadSpaConfig(); // Recharge la configuration après sauvegarde
+        } else {
+            console.error(i18n("Failed to save SPA config. Status:"), req.status);
+            buttonConfirm(saveButton, i18n("Save Failed!"), 3, true);
+        }
+    };
+    req.onerror = function() {
+        console.error(i18n("XMLHttpRequest error during saveSpaConfig. Check network/ESP response."));
+        buttonConfirm(saveButton, i18n("Failed (Network Error)"), 3, true);
+    };
+}
+
+
+function updateSpaControlPageButtons() {
+    const controlButtonMap = {
+        'btn-heating': { configKey: 'HTR', dataKey: { red: 'RED', green: 'GRN' }, textId: 'heating-action' },
+        'btn-pump': { configKey: 'FLT', dataKey: 'FLT', textId: 'pump-action' },
+        'btn-bubbles': { configKey: 'AIR', dataKey: 'AIR', textId: 'bubbles-action' },
+        'btn-hydrojets': { configKey: 'HJT', dataKey: 'HJT', textId: 'hydrojets-action' },
+        'btn-units': { configKey: 'UNT', dataKey: 'UNT', textId: 'unit-action' },
+        'GOD': { configKey: 'GOD', dataKey: 'GOD', textId: 'godmode-action' } // L'ID 'GOD' est utilisé pour la correspondance
+    };
+
+    for (const btnId in controlButtonMap) {
+        const map = controlButtonMap[btnId];
+        const controlButton = document.getElementById(btnId);
+        if (!controlButton) {
+            continue;
         }
 
-        function updateSpaControlPageButtons() {
-            const controlButtonMap = {
-                'btn-heating': { configKey: 'HTR', dataKey: { red: 'RED', green: 'GRN' }, textId: 'heating-action' },
-                'btn-pump': { configKey: 'FLT', dataKey: 'FLT', textId: 'pump-action' },
-                'btn-bubbles': { configKey: 'AIR', dataKey: 'AIR', textId: 'bubbles-action' },
-                'btn-hydrojets': { configKey: 'HJT', dataKey: 'HJT', textId: 'hydrojets-action' },
-                'btn-units': { configKey: 'UNT', dataKey: 'UNT', textId: 'unit-action' } 
-            };
+        let isFeatureAvailable = true;
+        if (btnId === 'btn-bubbles' && !spaCapabilities.hasAir) isFeatureAvailable = false;
+        if (btnId === 'btn-hydrojets' && !spaCapabilities.hasJets) isFeatureAvailable = false;
 
-            for (const btnId in controlButtonMap) {
-                const map = controlButtonMap[btnId];
-                const controlButton = document.getElementById(btnId);
-                if (!controlButton) {
-                    continue;
-                }
+        controlButton.classList.toggle('hidden', !isFeatureAvailable);
+        if (!isFeatureAvailable) continue;
 
-                let isFeatureAvailable = true;
-                if (btnId === 'btn-bubbles' && !spaCapabilities.hasAir) isFeatureAvailable = false;
-                if (btnId === 'btn-hydrojets' && !spaCapabilities.hasJets) isFeatureAvailable = false;
+        // Supprime toutes les classes d'état avant d'en ajouter de nouvelles pour éviter les conflits
+        controlButton.classList.remove('active', 'inactive', 'standby');
 
-                controlButton.classList.toggle('hidden', !isFeatureAvailable);
-                if (!isFeatureAvailable) continue; 
+        if (btnId === 'btn-heating') {
+            if (currentData.RED === 1) {
+                controlButton.classList.add('active');
+                document.getElementById(map.textId).textContent = i18n('Heating Active');
+            } else if (currentData.GRN === 1) {
+                controlButton.classList.add('standby');
+                document.getElementById(map.textId).textContent = i18n('Standby');
+            } else {
+                controlButton.classList.add('inactive');
+                document.getElementById(map.textId).textContent = i18n('Off');
+            }
+            controlButton.classList.add('btn-heating'); // Cette classe est nécessaire pour le CSS spécifique
+        } else if (btnId === 'btn-pump') {
+            if (currentData.FLT === 1) {
+                controlButton.classList.add('active');
+                document.getElementById(map.textId).textContent = i18n('Disable');
+            } else {
+                controlButton.classList.add('inactive');
+                document.getElementById(map.textId).textContent = i18n('Enable');
+            }
+            controlButton.classList.add('btn-pump'); // Cette classe est nécessaire pour le CSS spécifique
+        } else if (btnId === 'btn-bubbles') {
+            if (currentData.AIR === 1) {
+                controlButton.classList.add('active');
+                document.getElementById(map.textId).textContent = i18n('Disable');
+            } else {
+                controlButton.classList.add('inactive');
+                document.getElementById(map.textId).textContent = i18n('Enable');
+            }
+            controlButton.classList.add('btn-bubbles'); // Cette classe est nécessaire pour le CSS spécifique
+        } else if (btnId === 'btn-hydrojets') {
+            if (currentData.HJT === 1) {
+                controlButton.classList.add('active');
+                document.getElementById(map.textId).textContent = i18n('Disable');
+            } else {
+                controlButton.classList.add('inactive');
+                document.getElementById(map.textId).textContent = i18n('Enable');
+            }
+            controlButton.classList.add('btn-hydrojets'); // Cette classe est nécessaire pour le CSS spécifique
+        } else if (btnId === 'btn-units') {
+            // Pas de gestion active/inactive directe pour btn-units dans votre code fourni
+            controlButton.classList.add('btn-units');
+        } else if (btnId === 'GOD') { // Bloc spécifique pour le bouton God Mode
+            // AJOUTEZ CETTE LIGNE : Pour que le CSS spécifique au God Mode puisse s'appliquer
+            controlButton.classList.add('btn-godmode');
 
-                controlButton.classList.remove('active', 'inactive', 'standby');
-
-                if (btnId === 'btn-heating') {
-                    if (currentData.RED === 1) {
-                        controlButton.classList.add('active'); 
-                        document.getElementById(map.textId).textContent = i18n('Heating Active');
-                    } else if (currentData.GRN === 1) {
-                        controlButton.classList.add('standby'); 
-                        document.getElementById(map.textId).textContent = i18n('Standby');
-                    } else {
-                        controlButton.classList.add('inactive'); 
-                        document.getElementById(map.textId).textContent = i18n('Off');
-                    }
-                    controlButton.classList.add('btn-heating'); 
-                } else if (btnId === 'btn-pump') {
-                    if (currentData.FLT === 1) {
-                        controlButton.classList.add('active');
-                        document.getElementById(map.textId).textContent = i18n('Disable');
-                    } else {
-                        controlButton.classList.add('inactive');
-                        document.getElementById(map.textId).textContent = i18n('Enable');
-                    }
-                    controlButton.classList.add('btn-pump'); 
-                } else if (btnId === 'btn-bubbles') {
-                    if (currentData.AIR === 1) {
-                        controlButton.classList.add('active');
-                        document.getElementById(map.textId).textContent = i18n('Disable');
-                    } else {
-                        controlButton.classList.add('inactive');
-                        document.getElementById(map.textId).textContent = i18n('Enable');
-                    }
-                    controlButton.classList.add('btn-bubbles'); 
-                } else if (btnId === 'btn-hydrojets') {
-                    if (currentData.HJT === 1) {
-                        controlButton.classList.add('active');
-                        document.getElementById(map.textId).textContent = i18n('Disable');
-                    } else {
-                        controlButton.classList.add('inactive');
-                        document.getElementById(map.textId).textContent = i18n('Enable');
-                    }
-                    controlButton.classList.add('btn-hydrojets'); 
-                } else if (btnId === 'btn-units') {
-                    controlButton.classList.add('btn-units'); 
-                }
+            if (currentData.GOD === 1) {
+                controlButton.classList.add('active');
+                controlButton.querySelector('.text-sm').textContent = i18n('Active');
+            } else {
+                controlButton.classList.add('inactive');
+                controlButton.querySelector('.text-sm').textContent = i18n('Inactive');
             }
         }
+    }
+}
+
+
 
         function updateSpaConfigPageElements() {
             const masterSwitchActive = document.getElementById('activate-display-buttons').checked;
@@ -1570,7 +1595,8 @@ function handleMessage(data) {
                 'btn-temp-minus': { visualId: 'visual-btn-temp-minus', configKey: 'DN', label: 'Temp -' },
                 'btn-lock': { visualId: 'visual-btn-lock', configKey: 'LCK_btn', label: 'Lock' }, 
                 'btn-unit': { visualId: 'visual-btn-unit', configKey: 'UNT', label: 'Unit' },
-                'btn-timer': { visualId: 'visual-btn-timer', configKey: 'TMR', label: 'Timer' }
+                'btn-timer': { visualId: 'visual-btn-timer', configKey: 'TMR', label: 'Timer' },
+				'btn-godmode': { visualId: 'visual-btn-godmode', configKey: 'GOD', label: 'God Mode' }
             };
 
             for (const checkboxId in configButtonMapping) {
@@ -2615,7 +2641,7 @@ function updateMaintenanceItem(prefix, lastTimestamp, daysLeft) {
             const configKeyMap = { 
                 'btn-power': 'PWR', 'btn-filter': 'FLT', 'btn-heating': 'HTR', 'btn-bubbles': 'AIR', 
                 'btn-jets': 'HJT', 'btn-temp-plus': 'UP', 'btn-temp-minus': 'DN', 
-                'btn-lock': 'LCK_btn', 'btn-unit': 'UNT', 'btn-timer': 'TMR' 
+                'btn-lock': 'LCK_btn', 'btn-unit': 'UNT', 'btn-timer': 'TMR', 'btn-godmode': 'GOD' 
             };
             individualButtonCheckboxes.forEach(id => {
                 const checkbox = document.getElementById(id);
